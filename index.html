@@ -3,95 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>FITI – Inspección AT</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div id="hoja1" class="page">
-            <h1 class="main-title">Registro de Inspección</h1>
-            <div class="card">
-                <label class="label-bold">Nombre del Inspector *</label>
-                <input id="inspector" class="input-modern" placeholder="Nombre completo">
-                <label class="label-bold" style="margin-top:10px;">Nº Expediente *</label>
-                <input id="expediente" class="input-modern" placeholder="Ej: 2024/001">
-            </div>
-            <div class="card">
-                <label class="label-bold">Firma del Técnico</label>
-                <div class="signature-wrapper">
-                    <canvas id="canvas-firma"></canvas>
-                </div>
-                <button type="button" class="btn-clear" onclick="limpiarFirma()">✖ Borrar</button>
-            </div>
-            <button class="btn-gps-action" onclick="iniciarInspeccion()">🚀 CAPTURAR GPS E INICIAR</button>
-            <div id="datos-inicio" style="display:none; margin-top: 15px;">
-                <p>📍 GPS: <span id="gps-display"></span></p>
-                <button class="btn-continue" onclick="cambiarHoja(2)">CONTINUAR →</button>
-            </div>
+
+<div class="container">
+
+    <!-- ================= HOJA 1 ================= -->
+    <div id="hoja1" class="page">
+        <h1 class="main-title">Registro de Inspección</h1>
+        <p class="step-subtitle">Fase 1: Preparación y Geolocalización</p>
+
+        <div class="card">
+            <label class="label-bold">Nombre del Inspector *</label>
+            <input id="inspector" class="input-modern">
+
+            <label class="label-bold" style="margin-top:10px;">Nº Expediente *</label>
+            <input id="expediente" class="input-modern">
         </div>
 
-        <div id="hoja2" class="page" style="display:none;">
-            <h1 class="main-title">Titular</h1>
-            <div class="card">
-                <label class="mini-label">Nombre / Razón social</label>
-                <input id="titular_nombre" class="input-modern">
+        <div class="card">
+            <label class="label-bold">Equipos de Medida</label>
+            <div class="input-grupal">
+                <input id="eq-referencia" class="input-modern">
+                <button type="button" onclick="añadirEquipoMedida()">+</button>
             </div>
-            <div class="footer-nav">
-                <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
-                <button class="btn-continue" onclick="cambiarHoja(3)">SIGUIENTE →</button>
-            </div>
+            <ul id="lista-equipos"></ul>
         </div>
 
-        <div id="hoja3" class="page" style="display:none;">
-            <h1 class="main-title">Instalación</h1>
-            <div class="card">
-                <label class="mini-label">Denominación</label>
-                <input id="inst_denominacion" class="input-modern">
+        <div class="card">
+            <label class="label-bold">Firma del Técnico</label>
+            <div class="signature-wrapper">
+                <canvas id="canvas-firma"></canvas>
             </div>
-            <div class="footer-nav">
-                <button class="btn-back" onclick="cambiarHoja(2)">← Volver</button>
-                <button class="btn-continue" onclick="procesarHoja3()">SIGUIENTE →</button>
-            </div>
+            <button type="button" class="btn-clear" onclick="limpiarFirma()">✖ Borrar Firma</button>
         </div>
 
-        <div id="hoja4" class="page" style="display:none;">
-            <h1>1. DOCUMENTACIÓN</h1>
-            <div id="contenedor-doc"></div>
-            <div class="footer-nav">
-                <button class="btn-back" onclick="cambiarHoja(3)">← Volver</button>
-                <button class="btn-continue" onclick="cambiarHoja(5)">DATOS TRAFO →</button>
-            </div>
-        </div>
+        <button class="btn-gps-action" onclick="iniciarInspeccion()">🚀 CAPTURAR GPS E INICIAR</button>
 
-        <div id="hoja5" class="page" style="display:none;">
-            <h1>2. CARACTERÍSTICAS DEL TRAFO</h1>
-            <div id="contenedor-trafos-datos"></div>
-            <div class="footer-nav">
-                <button class="btn-back" onclick="cambiarHoja(4)">← Volver</button>
-                <button class="btn-continue" onclick="cambiarHoja(6)">CHECKLIST →</button>
-            </div>
-        </div>
-
-        <div id="hoja6" class="page" style="display:none;">
-            <h1 id="titulo-seccion"></h1>
-            <div id="contenedor-preguntas"></div>
-            <div class="footer-nav">
-                <button class="btn-back" onclick="irAtras()">← Volver</button>
-                <button class="btn-continue" onclick="irAdelante()">SIGUIENTE →</button>
-            </div>
-        </div>
-
-        <div id="hojaCertificado" class="page" style="display:none;">
-            <h1 class="main-title">Certificado Final</h1>
-            <div class="card">
-                <p><strong>Expediente:</strong> <span id="cert_expediente"></span></p>
-                <p><strong>Titular:</strong> <span id="cert_titular_nombre"></span></p>
-            </div>
-            <button class="btn-continue" onclick="generarPDF()">GENERAR PDF</button>
+        <div id="datos-inicio" style="display:none;">
+            <p>📍 GPS: <span id="gps-display"></span></p>
+            <button class="btn-continue" onclick="cambiarHoja(2)">CONTINUAR →</button>
         </div>
     </div>
 
-    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-    <script src="app.js"></script>
+    <!-- ================= HOJA 2 ================= -->
+    <div id="hoja2" class="page" style="display:none;">
+        <h1>1. DOCUMENTACIÓN</h1>
+        <div id="contenedor-doc"></div>
+
+        <div class="footer-nav">
+            <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
+            <button class="btn-continue" onclick="cambiarHoja(3)">DATOS TRAFO →</button>
+        </div>
+    </div>
+
+    <!-- ================= HOJA 3 ================= -->
+    <div id="hoja3" class="page" style="display:none;">
+        <h1>2. CARACTERÍSTICAS DEL TRAFO</h1>
+        <div id="contenedor-trafos-datos"></div>
+
+        <button class="btn-add-trafo" onclick="añadirFormularioTrafo()">+ AÑADIR TRANSFORMADOR</button>
+
+        <div class="footer-nav">
+            <button class="btn-back" onclick="cambiarHoja(2)">← Volver</button>
+            <button class="btn-continue" onclick="cambiarHoja(4)">CHECKLIST →</button>
+        </div>
+    </div>
+
+    <!-- ================= HOJA 4 ================= -->
+    <div id="hoja4" class="page" style="display:none;">
+        <h1 id="titulo-seccion"></h1>
+        <div id="contenedor-preguntas"></div>
+
+        <div class="footer-nav">
+            <button class="btn-back" onclick="irAtras()">← Volver</button>
+            <button class="btn-continue" id="btn-siguiente-seccion" onclick="irAdelante()">SIGUIENTE →</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
