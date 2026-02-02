@@ -10,16 +10,15 @@ let contadorTrafos = 0;
 // CHECKLIST (INTACTO)
 // ===================================================
 const seccionesChecklist = [
-    {
-        titulo:"1. DOCUMENTACIÓN",
-        preguntas:[
-            "1.1 Contrato mantenimiento",
-            "1.2 Instrucciones operación",
-            "1.3 Correspondencia doc/inst",
-            "1.4 Doc. conforme (CFO)",
-            "1.5 Proyecto / Memoria",
-            "1.6 Libro de mantenimiento"
-        ]
+{
+    titulo: "1. DOCUMENTACIÓN",
+    preguntas: [
+        "1.1 Contrato de mantenimiento (según comunidad autónoma)",
+        "1.2 Instrucciones de operación, libro de control y mantenimiento",
+        "1.3 Correspondencia entre documentación e instalación",
+        "1.4 La documentación es conforme (Proyecto, CFO, certificado de instalador autorizado)"
+    ]
+
     },
     {
         titulo:"2. COMPROBACIONES TRANSFORMADOR",
@@ -127,25 +126,44 @@ const seccionesChecklist = [
         ]
     },
     {
-        titulo: "5. INSTALACIONES DE INTERIOR",
-        controlAplica: true,
-        preguntas: [
-            "5.1 Recinto",
-            "5.1.1 Las condiciones de accesos y pasos son correctas",
-            "5.1.2 Cerramientos de los recintos",
-            "5.1.3 Entrada de líneas y canalizaciones al recinto",
-            "5.1.4 Ventilación adecuada",
-            "5.2 Características de las instalaciones",
-            "5.2.1 Canalizaciones eléctricas; ubicación, accesibilidad y características",
-            "5.2.2 Ubicación de cuadros y pupitres",
-            "5.2.3 Celdas de alta tensión",
-            "5.2.4 Instalaciones de almacenamiento de aguas y fluidos",
-            "5.2.5 Instalaciones ajenas al servicio",
-            "5.2.6 Iluminación adecuada",
-            "5.2.7 Alumbrados especiales de emergencia",
-            "5.2.8 Aislamiento de terminaciones de líneas",
-            "5.2.9 Aislamiento de puentes de cables"
-        ]
+    titulo: "5. INSTALACIONES DE INTERIOR",
+    controlAplica: true,
+    preguntas: [
+
+        "5.1 Recinto",
+        "5.1.1 Las condiciones de accesos y pasos son correctas",
+        "5.1.2 Cerramientos de los recintos",
+        "5.1.3 Entrada de líneas y canalizaciones al recinto",
+        "5.1.4 Ventilación adecuada",
+
+        "5.2 Características de la instalación",
+        "5.2.1 Canalizaciones eléctricas; ubicación, accesibilidad y características",
+        "5.2.2 Ubicación de cuadros y pupitres",
+        "5.2.3 Celdas de alta tensión (características, separación, dieléctrico inflamable > 50 l con medios de propagación explosión, etc.)",
+        "5.2.4 Instalaciones adecuadas de almacenamiento de aguas, alcantarillado y fluidos combustibles",
+        "5.2.5 Instalaciones y objetos ajenos al servicio",
+        "5.2.6 Iluminación adecuada",
+        "5.2.7 Alumbrados especiales de emergencia (instalaciones con personal permanente o locales de pública concurrencia)",
+        "5.2.8 Aislamiento de terminaciones de líneas con cables",
+        "5.2.9 Aislamiento de puentes de cables",
+
+        "5.3 Pasillos de servicio y maniobra",
+        "5.3.1 Pasillos de servicio de características y dimensiones adecuadas",
+        "5.3.2 Zonas de protección contra contactos accidentales (pantallas, barreras, bornas aisladas, mandos, etc.)",
+        "5.3.3 Adecuados los medios para la limitación de campos magnéticos en edificios habitables o anexos",
+
+        "5.4 Sistema contra incendios",
+        "5.4.1 Dispositivo de recogida de aceites (> 50 litros)",
+        "5.4.2 Fosos con cortafuegos (Tmin ≈ 300 ºC) (lechograva, sifones con fosos con colector único, etc.)",
+        "5.4.3 Existencia, ubicación y eficacia adecuada para extintores móviles",
+        "5.4.4 Sistemas de extinción fijos (características, instrucciones, plano, etc.)",
+
+        "5.5 Elementos de seguridad y señalización",
+        "5.5.1 Señalización e instrucciones (puertas de entrada, cabinas, elementos de maniobra, esquemas unifilares, instrucciones de servicio)",
+        "5.5.2 Elementos de seguridad para realización de maniobras (guantes, banquetas, alfombra, pértigas, etc.)",
+        "5.5.3 Instrucciones y elementos de primeros auxilios"
+    ]
+
     },
     {
     titulo: "6. INSTALACIONES DE EXTERIOR",
@@ -214,7 +232,6 @@ function cambiarHoja(n){
         document.getElementById("hoja"+n).style.display = "block";
     }
 
-    if(n === 2) renderDoc();
     if(n === 3 && contadorTrafos === 0) añadirFormularioTrafo();
     if(n === 4){ seccionActual = 0; renderSeccion(); }
     if(n === 1) setTimeout(iniciarFirma,50);
@@ -463,13 +480,18 @@ function añadirFormularioTrafo(){
             <label><input type="radio" name="neutro_${id}"> Por impedancia</label>
         </div>
 
-        <label class="mini-label" style="margin-top:8px;">Tipo / Refrigeración</label>
-        <div class="grid-tecnico">
-            <label><input type="radio" name="tipo_${id}"> Seco</label>
-            <label><input type="radio" name="tipo_${id}"> Baño de líquido</label>
-            <label><input type="radio" name="refrig_${id}"> Natural</label>
-            <label><input type="radio" name="refrig_${id}"> Forzada</label>
-        </div>
+                    <label class="mini-label" style="margin-top:8px;">Tipo de transformador</label>
+                    <div class="grid-tecnico">
+                    <label><input type="radio" name="tipo_${id}"> Seco</label>
+                    <label><input type="radio" name="tipo_${id}"> Baño de líquido</label>
+</div>
+
+<label class="mini-label" style="margin-top:8px;">Tipo de refrigeración</label>
+<div class="grid-tecnico">
+    <label><input type="radio" name="refrig_${id}"> Natural</label>
+    <label><input type="radio" name="refrig_${id}"> Forzada</label>
+</div>
+
     </div>
 
     <!-- ================= ELEMENTOS ================= -->
@@ -514,13 +536,23 @@ function añadirFormularioTrafo(){
     c.appendChild(d);
 }
 
-function elem(n,t=false){
-    return `<div class="elem-row">
-        <span>${n}</span>
-        <div>
-            <label><input type="radio" name="${n}"> C</label>
-            <label><input type="radio" name="${n}"> N/C</label>
-            ${t?'<input class="input-mini" placeholder="ºC">':''}
+function elem(nombre, conTemp = false) {
+    const id = nombre.replace(/\s+/g, "_");
+
+    return `
+    <div class="elem-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+        <span><b>${nombre}</b></span>
+
+        <label style="font-size:0.75rem;">
+            <input type="checkbox"
+                   onchange="document.getElementById('det_${id}').style.display=this.checked?'flex':'none'">
+            Aplica
+        </label>
+
+        <div id="det_${id}" style="display:none; gap:10px; align-items:center;">
+            <label><input type="radio" name="estado_${id}"> C</label>
+            <label><input type="radio" name="estado_${id}"> N/C</label>
+            ${conTemp ? '<input class="input-mini" placeholder="ºC">' : ''}
         </div>
     </div>`;
 }

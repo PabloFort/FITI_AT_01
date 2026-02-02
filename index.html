@@ -47,18 +47,9 @@
 
         <div id="datos-inicio" style="display:none;">
             <p>📍 GPS: <span id="gps-display"></span></p>
-            <button class="btn-continue" onclick="cambiarHoja(2)">CONTINUAR →</button>
-        </div>
-    </div>
-
-    <!-- ================= HOJA 2 ================= -->
-    <div id="hoja2" class="page" style="display:none;">
-        <h1>1. DOCUMENTACIÓN</h1>
-        <div id="contenedor-doc"></div>
-
-        <div class="footer-nav">
-            <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
-            <button class="btn-continue" onclick="cambiarHoja(3)">DATOS TRAFO →</button>
+            <!-- 🔧 ANTES iba a hoja2 (DOCUMENTACIÓN) -->
+            <!-- ✅ AHORA va directo a DATOS DEL TRAFO -->
+            <button class="btn-continue" onclick="cambiarHoja(3)">CONTINUAR →</button>
         </div>
     </div>
 
@@ -70,7 +61,8 @@
         <button class="btn-add-trafo" onclick="añadirFormularioTrafo()">+ AÑADIR TRANSFORMADOR</button>
 
         <div class="footer-nav">
-            <button class="btn-back" onclick="cambiarHoja(2)">← Volver</button>
+            <!-- 🔧 ANTES volvía a hoja2 -->
+            <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
             <button class="btn-continue" onclick="cambiarHoja(4)">CHECKLIST →</button>
         </div>
     </div>
@@ -91,3 +83,4 @@
 <script src="app.js" defer></script>
 </body>
 </html>
+
