@@ -291,3 +291,15 @@ input:checked + .lbl-na {
     margin-right:6px;
     transform:scale(1.2);
 }
+.fila-dato {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.fila-dato .etiqueta {
+    min-width: 180px;
+    font-weight: 600;
+}
+

@@ -49,9 +49,218 @@
             <p>📍 GPS: <span id="gps-display"></span></p>
             <!-- 🔧 ANTES iba a hoja2 (DOCUMENTACIÓN) -->
             <!-- ✅ AHORA va directo a DATOS DEL TRAFO -->
-            <button class="btn-continue" onclick="cambiarHoja(3)">CONTINUAR →</button>
+            <button class="btn-continue" onclick="cambiarHoja(2)">CONTINUAR →</button>
         </div>
     </div>
+
+<!-- ================= HOJA 2 – DATOS TITULAR E INSTALACIÓN ================= -->
+<div id="hoja2" class="page" style="display:none;">
+    <h1>Datos del Titular e Instalación</h1>
+
+    <!-- ===== TITULAR ===== -->
+    <div class="card">
+        <p class="section-tag">Titular</p>
+
+        <label class="mini-label">Nombre / Razón social</label>
+        <input id="titular_nombre" class="input-modern">
+
+        <div class="grid-tecnico">
+            <div>
+                <label class="mini-label">CIF</label>
+                <input id="titular_cif" class="input-modern">
+            </div>
+            <div>
+                <label class="mini-label">Teléfono</label>
+                <input id="titular_telefono" class="input-modern">
+            </div>
+        </div>
+
+        <label class="mini-label">Dirección</label>
+        <input id="titular_direccion" class="input-modern">
+
+        <div class="grid-tecnico">
+            <div>
+                <label class="mini-label">CP / Localidad</label>
+                <input id="titular_cp" class="input-modern">
+            </div>
+            <div>
+                <label class="mini-label">Provincia</label>
+                <input id="titular_provincia" class="input-modern">
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== INSTALACIÓN ===== -->
+    <div class="card">
+        <p class="section-tag">Instalación</p>
+
+        <label class="mini-label">Denominación de la instalación</label>
+        <input id="inst_denominacion" class="input-modern">
+
+        <label class="mini-label">Ubicación (coordenadas)</label>
+        <input id="inst_coordenadas" class="input-modern">
+
+        <label class="mini-label">Dirección</label>
+        <input id="inst_direccion" class="input-modern">
+
+        <div class="grid-tecnico">
+            <div>
+                <label class="mini-label">CP / Localidad</label>
+                <input id="inst_cp" class="input-modern">
+            </div>
+            <div>
+                <label class="mini-label">Provincia</label>
+                <input id="inst_provincia" class="input-modern">
+            </div>
+        </div>
+
+        <div class="grid-tecnico">
+            <div>
+                <label class="mini-label">Nº Registro</label>
+                <input id="inst_registro" class="input-modern">
+            </div>
+            <div>
+                <label class="mini-label">Fecha última inspección</label>
+                <input id="inst_ultima" class="input-modern">
+            </div>
+            <div>
+                <label class="mini-label">Reglamento</label><br>
+                <label><input type="radio" name="inst_reglamento" value="1982"> 1982</label>
+                <label><input type="radio" name="inst_reglamento" value="2014"> 2014</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TIPO DE INSPECCIÓN ===== -->
+    <div class="card">
+        <p class="section-tag">Tipo de inspección</p>
+
+        <div class="grid-tecnico">
+            <label>
+                <input type="radio" name="insp_tipo_principal" value="Inicial"
+                       onchange="toggleInicial(true)">
+                Inicial
+            </label>
+            <label>
+                <input type="radio" name="insp_tipo_principal" value="Periodica"
+                       onchange="toggleInicial(false)">
+                Periódica
+            </label>
+        </div>
+
+        <!-- SOLO SI ES INICIAL -->
+        <div id="bloque_inicial"
+             style="display:none; margin-top:12px; padding-left:10px; border-left:3px solid #3b82f6;">
+
+            <label><input type="checkbox" id="insp_nueva"> Nueva</label>
+
+            <div class="grid-tecnico" style="margin-top:6px;">
+                <label>
+                    <input type="checkbox" id="insp_ampliacion"
+                           onchange="document.getElementById('kw_ampliacion').style.display=this.checked?'block':'none'">
+                    Ampliación
+                </label>
+                <input id="kw_ampliacion" class="input-mini" placeholder="kW ampliados"
+                       style="display:none;">
+            </div>
+
+            <div class="grid-tecnico" style="margin-top:6px;">
+                <label>
+                    <input type="checkbox" id="insp_modificacion"
+                           onchange="document.getElementById('kw_modificacion').style.display=this.checked?'block':'none'">
+                    Modificación
+                </label>
+                <input id="kw_modificacion" class="input-mini" placeholder="kW modificados"
+                       style="display:none;">
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PROYECTISTA ===== -->
+    <div class="card">
+        <p class="section-tag">Proyectista (solo inspecciones iniciales)</p>
+
+        <div class="grid-tecnico">
+            <input class="input-modern" placeholder="Nombre">
+            <input class="input-modern" placeholder="Apellidos">
+        </div>
+
+        <div class="grid-tecnico">
+            <input class="input-modern" placeholder="Colegio">
+            <input class="input-modern" placeholder="Nº colegiado">
+        </div>
+    </div>
+
+    <!-- ===== DIRECTOR DE OBRA ===== -->
+    <div class="card">
+        <p class="section-tag">Director de obra (solo inspecciones iniciales)</p>
+
+        <div class="grid-tecnico">
+            <input class="input-modern" placeholder="Nombre">
+            <input class="input-modern" placeholder="Apellidos">
+        </div>
+
+        <div class="grid-tecnico">
+            <input class="input-modern" placeholder="Colegio">
+            <input class="input-modern" placeholder="Nº colegiado">
+        </div>
+    </div>
+
+    <!-- ===== INSTALADOR / MANTENEDOR ===== -->
+    <div class="card">
+        <p class="section-tag">Instalador / Mantenedor</p>
+
+        <div class="grid-tecnico">
+            <input class="input-modern" placeholder="Empresa">
+            <input class="input-modern" placeholder="CIF / NIF">
+        </div>
+
+        <input class="input-modern" placeholder="Nombre responsable">
+    </div>
+
+    <!-- ===== DATOS TÉCNICOS ===== -->
+    <div class="card">
+        <p class="section-tag">Datos técnicos de la instalación</p>
+
+        <div class="fila-dato">
+            <span class="etiqueta">Tipo de instalación</span>
+            <label><input type="radio" name="tipo_inst" value="Interior"> Interior</label>
+            <label><input type="radio" name="tipo_inst" value="Exterior"> Exterior</label>
+        </div>
+
+        <div class="fila-dato">
+            <span class="etiqueta">Línea de alimentación</span>
+            <label><input type="radio" name="linea_alim" value="Aerea"> Aérea</label>
+            <label><input type="radio" name="linea_alim" value="Subterranea"> Subterránea</label>
+            <label><input type="radio" name="linea_alim" value="Mixta"> Mixta</label>
+        </div>
+
+        <div class="fila-dato">
+            <span class="etiqueta">Protección sobretensiones</span>
+            <label><input type="radio" name="sobretensiones" value="Si"> Sí</label>
+            <label><input type="radio" name="sobretensiones" value="No"> No</label>
+        </div>
+
+        <label class="mini-label">Tensiones de servicio 1º / 2º (V)</label>
+        <input class="input-modern">
+
+        <label class="mini-label">Potencia instalada total (kVA)</label>
+        <input class="input-modern">
+
+        <label class="mini-label">Protecciones de línea (I-defecto / tiempo desconexión)</label>
+        <input class="input-modern">
+
+        <label class="mini-label">Empresa de distribución</label>
+        <input class="input-modern">
+    </div>
+
+    <!-- ===== NAVEGACIÓN ===== -->
+    <div class="footer-nav">
+        <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
+        <button class="btn-continue" onclick="cambiarHoja(3)">DATOS TRAFO →</button>
+    </div>
+
+</div>
 
     <!-- ================= HOJA 3 ================= -->
     <div id="hoja3" class="page" style="display:none;">

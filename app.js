@@ -226,12 +226,9 @@ const seccionesChecklist = [
 function cambiarHoja(n){
     document.querySelectorAll('.page').forEach(p=>p.style.display="none");
 
-    if(n === 'Titular'){
-        document.getElementById("hojaTitular").style.display = "block";
-    } else {
-        document.getElementById("hoja"+n).style.display = "block";
-    }
+    document.getElementById("hoja"+n).style.display = "block";
 
+    if(n === 2) renderDoc();            // 🔴 ESTO FALTABA
     if(n === 3 && contadorTrafos === 0) añadirFormularioTrafo();
     if(n === 4){ seccionActual = 0; renderSeccion(); }
     if(n === 1) setTimeout(iniciarFirma,50);
@@ -378,6 +375,11 @@ function irAdelante(){
 function irAtras(){
     if(seccionActual>0){ seccionActual--; renderSeccion(); }
     else cambiarHoja(3);
+}
+
+function toggleInicial(esInicial) {
+    document.getElementById("bloque_inicial").style.display =
+        esInicial ? "block" : "none";
 }
 
 // ===================================================
