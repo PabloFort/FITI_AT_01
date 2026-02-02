@@ -1,8 +1,6 @@
 /* ===================================================
-   APP INSPECCIÓN AT – app.js (SOLUCIÓN DEFINITIVA)
+   APP INSPECCIÓN AT – app.js (CORREGIDO PARA GITHUB)
    =================================================== */
-console.log("APP JS CARGADO");
-alert("JS cargado");
 
 // 1. ESTADO GLOBAL
 let datosSesion = {
@@ -17,7 +15,6 @@ let seccionActual = 0;
 let contadorTrafos = 0;
 let equiposMedida = [];
 
-// 2. CONFIGURACIÓN CHECKLIST
 const seccionesChecklist = [
     { titulo: "1. DOCUMENTACIÓN", preguntas: ["1.1 Contrato mantenimiento", "1.2 Instrucciones operación", "1.3 Correspondencia doc/inst", "1.4 Doc. conforme (CFO)", "1.5 Proyecto / Memoria", "1.6 Libro de mantenimiento"] },
     { titulo: "2. COMPROBACIONES TRANSFORMADOR", preguntas: ["2.1 Placa características", "2.2 Nivel refrigerante", "2.3 Estado aisladores", "2.4 Protecciones internas", "2.5 Anclaje y foso", "2.6 Termostato", "2.7 Silicagel", "2.8 Conexión tierra chasis", "2.9 Placa PCB", "2.10 Tierra neutro"] },
@@ -27,26 +24,22 @@ const seccionesChecklist = [
     { titulo: "6. INSTALACIONES EXTERIOR", controlAplica: true, preguntas: ["6.1.1 Vallado adecuado", "6.1.2 Carteles de riesgo", "6.1.5 Sin corrosión"] }
 ];
 
-// 3. NAVEGACIÓN ROBUSTA
+// 2. NAVEGACIÓN Y CARGA
 function cambiarHoja(n) {
-    console.log("Intentando ir a hoja:", n);
-    
-    // Ocultar todas las páginas
+    // Ocultar todas las páginas primero
     document.querySelectorAll(".page").forEach(p => p.style.display = "none");
 
-    // Construir ID correcto (acepta números o strings como 'hojaCertificado')
     const idHoja = (typeof n === "number") ? "hoja" + n : n;
     const hoja = document.getElementById(idHoja);
 
-    if (!hoja) {
-        console.error("ERROR: No se encontró el elemento con ID:", idHoja);
-        return;
-    }
-
+    if (!hoja) return;
     hoja.style.display = "block";
 
-    // Disparar funciones específicas al entrar en una hoja
-    if (n === 1) setTimeout(iniciarFirma, 100);
+    // Disparar lógica según la hoja
+    if (n === 1) {
+        // Retraso para asegurar que el canvas es visible antes de inicializarlo
+        setTimeout(iniciarFirma, 200);
+    }
     if (n === 4) renderDocumentacion();
     if (n === 5 && contadorTrafos === 0) añadirFormularioTrafo();
     if (n === 6) renderSeccion();
@@ -55,21 +48,41 @@ function cambiarHoja(n) {
     window.scrollTo(0, 0);
 }
 
-// 4. FUNCIONES DE LOGICA DE PASO (PARA BOTONES SIGUIENTE)
-function procesarHoja1() {
-    // Si no ha capturado GPS, lo forzamos o avisamos, pero dejamos pasar
-    cambiarHoja(2);
+// 3. FIRMA (Canvas)
+let canvas, ctx, dib = false;
+function iniciarFirma() {
+    canvas = document.getElementById("canvas-firma");
+    if (!canvas) return;
+    ctx = canvas.getContext("2d");
+    
+    // Ajustar tamaño al contenedor real
+    const r = canvas.getBoundingClientRect();
+    canvas.width = r.width;
+    canvas.height = r.height;
+    
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#000";
+
+    const obtenerPos = e => {
+        const rect = canvas.getBoundingClientRect();
+        const t = e.touches ? e.touches[0] : e;
+        return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+    };
+
+    canvas.onmousedown = e => { dib = true; const p = obtenerPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+    canvas.onmousemove = e => { if (!dib) return; const p = obtenerPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+    window.onmouseup = () => { dib = false; };
+    
+    canvas.ontouchstart = e => { e.preventDefault(); dib = true; const p = obtenerPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+    canvas.ontouchmove = e => { e.preventDefault(); if (!dib) return; const p = obtenerPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
 }
 
-function procesarHoja3() {
-    // Esta es la función que te faltaba o fallaba
-    console.log("Procesando datos de instalación...");
-    datosSesion.expediente = document.getElementById("expediente")?.value || "S/N";
-    // Podrías guardar más datos aquí
-    cambiarHoja(4);
+function limpiarFirma() { 
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height); 
 }
 
-// 5. GPS
+// 4. LÓGICA DE NEGOCIO
 function iniciarInspeccion() {
     const display = document.getElementById("gps-display");
     if (!navigator.geolocation) {
@@ -77,7 +90,6 @@ function iniciarInspeccion() {
         document.getElementById("datos-inicio").style.display = "block";
         return;
     }
-    
     navigator.geolocation.getCurrentPosition(
         pos => {
             datosSesion.gps = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
@@ -85,14 +97,12 @@ function iniciarInspeccion() {
             document.getElementById("datos-inicio").style.display = "block";
         },
         err => {
-            console.warn("Error GPS:", err);
-            alert("No se pudo obtener la ubicación, pero puedes continuar.");
+            alert("Ubicación no disponible, puedes continuar.");
             document.getElementById("datos-inicio").style.display = "block";
         }
     );
 }
 
-// 6. EQUIPOS DE MEDIDA (Faltaba en tu código)
 function añadirEquipoMedida() {
     const input = document.getElementById("eq-referencia");
     const lista = document.getElementById("lista-equipos");
@@ -105,7 +115,12 @@ function añadirEquipoMedida() {
     }
 }
 
-// 7. CHECKLIST DINÁMICO
+function procesarHoja3() {
+    datosSesion.expediente = document.getElementById("expediente")?.value || "S/N";
+    cambiarHoja(4);
+}
+
+// 5. CHECKLIST DINÁMICO
 function renderDocumentacion() {
     const cont = document.getElementById("contenedor-doc");
     if (!cont) return;
@@ -175,7 +190,6 @@ function irAtras() {
     }
 }
 
-// 8. TRANSFORMADORES
 function añadirFormularioTrafo() {
     contadorTrafos++;
     const cont = document.getElementById("contenedor-trafos-datos");
@@ -188,34 +202,6 @@ function añadirFormularioTrafo() {
     cont.appendChild(div);
 }
 
-// 9. FIRMA
-let canvas, ctx, dib = false;
-function iniciarFirma() {
-    canvas = document.getElementById("canvas-firma");
-    if (!canvas) return;
-    ctx = canvas.getContext("2d");
-    const r = canvas.getBoundingClientRect();
-    canvas.width = r.width;
-    canvas.height = r.height;
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-
-    const obtenerPos = e => {
-        const rect = canvas.getBoundingClientRect();
-        const t = e.touches ? e.touches[0] : e;
-        return { x: t.clientX - rect.left, y: t.clientY - rect.top };
-    };
-
-    canvas.onmousedown = e => { dib = true; const p = obtenerPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-    canvas.onmousemove = e => { if (!dib) return; const p = obtenerPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
-    window.onmouseup = () => { dib = false; };
-    canvas.ontouchstart = e => { e.preventDefault(); dib = true; const p = obtenerPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-    canvas.ontouchmove = e => { e.preventDefault(); if (!dib) return; const p = obtenerPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
-}
-
-function limpiarFirma() { if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-// 10. FINALIZACIÓN
 function generarVistaCertificado() {
     document.getElementById("cert_expediente").innerText = document.getElementById("expediente")?.value || "";
     document.getElementById("cert_fecha").innerText = datosSesion.fecha;
@@ -223,7 +209,11 @@ function generarVistaCertificado() {
 }
 
 async function generarPDF() {
-    alert("Función PDF-LIB conectando...");
+    alert("Función PDF-LIB lista. Conectando con plantilla...");
 }
 
-window.onload = () => { console.log("App FITI lista."); };
+// INICIO AL CARGAR
+window.onload = () => { 
+    cambiarHoja(1); 
+    console.log("FITI AT: Lista para usar.");
+};

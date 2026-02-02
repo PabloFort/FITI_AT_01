@@ -8,22 +8,17 @@
     <title>FITI – Inspección AT</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="container">
-
     <div id="hoja1" class="page">
         <h1 class="main-title">Registro de Inspección</h1>
-
         <div class="card">
             <label class="label-bold">Nombre del Inspector *</label>
             <input id="inspector" class="input-modern" placeholder="Nombre completo">
-
             <label class="label-bold" style="margin-top:10px;">Nº Expediente *</label>
             <input id="expediente" class="input-modern" placeholder="Ej: 2024/001">
         </div>
-
         <div class="card">
             <label class="label-bold">Equipos de Medida</label>
             <div class="input-grupal">
@@ -32,7 +27,6 @@
             </div>
             <ul id="lista-equipos"></ul>
         </div>
-
         <div class="card">
             <label class="label-bold">Firma del Técnico</label>
             <div class="signature-wrapper">
@@ -40,9 +34,7 @@
             </div>
             <button type="button" class="btn-clear" onclick="limpiarFirma()">✖ Borrar Firma</button>
         </div>
-
         <button class="btn-gps-action" onclick="iniciarInspeccion()">🚀 CAPTURAR GPS E INICIAR</button>
-
         <div id="datos-inicio" style="display:none; margin-top: 15px;">
             <p>📍 GPS: <span id="gps-display"></span></p>
             <button class="btn-continue" onclick="cambiarHoja(2)">CONTINUAR →</button>
@@ -51,37 +43,16 @@
 
     <div id="hoja2" class="page" style="display:none;">
         <h1 class="main-title">Identificación del titular</h1>
-
         <div class="card">
             <label class="mini-label">Nombre / Razón social</label>
             <input id="titular_nombre" class="input-modern">
-
             <div class="grid-tecnico" style="margin-top:8px;">
-                <div>
-                    <label class="mini-label">CIF</label>
-                    <input id="titular_cif" class="input-modern">
-                </div>
-                <div>
-                    <label class="mini-label">Teléfono</label>
-                    <input id="titular_telefono" class="input-modern">
-                </div>
+                <div><label class="mini-label">CIF</label><input id="titular_cif" class="input-modern"></div>
+                <div><label class="mini-label">Teléfono</label><input id="titular_telefono" class="input-modern"></div>
             </div>
-
             <label class="mini-label" style="margin-top:8px;">Dirección</label>
             <input id="titular_direccion" class="input-modern">
-
-            <div class="grid-tecnico" style="margin-top:8px;">
-                <div>
-                    <label class="mini-label">CP / Localidad</label>
-                    <input id="titular_cp_localidad" class="input-modern">
-                </div>
-                <div>
-                    <label class="mini-label">Provincia</label>
-                    <input id="titular_provincia" class="input-modern">
-                </div>
-            </div>
         </div>
-
         <div class="footer-nav">
             <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
             <button class="btn-continue" onclick="cambiarHoja(3)">SIGUIENTE →</button>
@@ -90,18 +61,14 @@
 
     <div id="hoja3" class="page" style="display:none;">
         <h1 class="main-title">Datos de la instalación</h1>
-
         <div class="card">
             <label class="mini-label">Denominación</label>
             <input id="inst_denominacion" class="input-modern">
-
             <label class="mini-label" style="margin-top:8px;">Ubicación (coordenadas)</label>
             <input id="inst_coordenadas" class="input-modern">
-
             <label class="mini-label" style="margin-top:8px;">Dirección</label>
             <input id="inst_direccion" class="input-modern">
         </div>
-
         <div class="footer-nav">
             <button class="btn-back" onclick="cambiarHoja(2)">← Volver</button>
             <button class="btn-continue" onclick="procesarHoja3()">SIGUIENTE →</button>
@@ -111,7 +78,6 @@
     <div id="hoja4" class="page" style="display:none;">
         <h1>1. DOCUMENTACIÓN</h1>
         <div id="contenedor-doc"></div>
-
         <div class="footer-nav">
             <button class="btn-back" onclick="cambiarHoja(3)">← Volver</button>
             <button class="btn-continue" onclick="cambiarHoja(5)">DATOS TRAFO →</button>
@@ -121,9 +87,7 @@
     <div id="hoja5" class="page" style="display:none;">
         <h1>2. CARACTERÍSTICAS DEL TRAFO</h1>
         <div id="contenedor-trafos-datos"></div>
-
         <button class="btn-add-trafo" onclick="añadirFormularioTrafo()">+ AÑADIR TRANSFORMADOR</button>
-
         <div class="footer-nav">
             <button class="btn-back" onclick="cambiarHoja(4)">← Volver</button>
             <button class="btn-continue" onclick="cambiarHoja(6)">CHECKLIST →</button>
@@ -133,7 +97,6 @@
     <div id="hoja6" class="page" style="display:none;">
         <h1 id="titulo-seccion"></h1>
         <div id="contenedor-preguntas"></div>
-
         <div class="footer-nav">
             <button class="btn-back" onclick="irAtras()">← Volver</button>
             <button class="btn-continue" onclick="irAdelante()">SIGUIENTE →</button>
@@ -142,31 +105,19 @@
 
     <div id="hojaCertificado" class="page" style="display:none;">
         <h1 class="main-title">Certificado de Inspección AT</h1>
-        <p class="step-subtitle">Vista previa antes de la emisión</p>
-
         <div class="card">
             <strong>Nº Expediente:</strong> <span id="cert_expediente"></span><br>
             <strong>Fecha:</strong> <span id="cert_fecha"></span>
         </div>
-
         <div class="card">
             <h3 class="section-tag">Titular</h3>
             <p><strong>Nombre:</strong> <span id="cert_titular_nombre"></span></p>
         </div>
-
-        <div class="card">
-            <h3 class="section-tag">Resultado de la inspección</h3>
-            <label><input type="radio" name="resultado_cert" value="Favorable"> Favorable</label><br>
-            <label><input type="radio" name="resultado_cert" value="Condicionada"> Condicionada</label><br>
-            <label><input type="radio" name="resultado_cert" value="Negativa"> Negativa</label>
-        </div>
-
         <div class="footer-nav">
-            <button class="btn-back" onclick="cambiarHoja(6)">← Volver al checklist</button>
-            <button class="btn-continue" onclick="generarPDF()">GENERAR CERTIFICADO PDF</button>
+            <button class="btn-back" onclick="cambiarHoja(6)">← Volver</button>
+            <button class="btn-continue" onclick="generarPDF()">GENERAR PDF</button>
         </div>
     </div>
-
 </div>
 
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
