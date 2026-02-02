@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>FITI – Inspección AT</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="container">
     <div id="hoja1" class="page">
         <h1 class="main-title">Registro de Inspección</h1>
@@ -104,14 +102,10 @@
     </div>
 
     <div id="hojaCertificado" class="page" style="display:none;">
-        <h1 class="main-title">Certificado de Inspección AT</h1>
+        <h1 class="main-title">Certificado Final</h1>
         <div class="card">
             <strong>Nº Expediente:</strong> <span id="cert_expediente"></span><br>
-            <strong>Fecha:</strong> <span id="cert_fecha"></span>
-        </div>
-        <div class="card">
-            <h3 class="section-tag">Titular</h3>
-            <p><strong>Nombre:</strong> <span id="cert_titular_nombre"></span></p>
+            <strong>Titular:</strong> <span id="cert_titular_nombre"></span>
         </div>
         <div class="footer-nav">
             <button class="btn-back" onclick="cambiarHoja(6)">← Volver</button>
@@ -119,7 +113,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 <script src="app.js"></script>
 </body>
