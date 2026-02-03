@@ -317,19 +317,30 @@ function filaChecklist(id, pregunta) {
 
         // ÍTEM NORMAL → con F / X / NA
         return `
-        <div class="fila-at">
-            <span class="pregunta-txt">${pregunta}</span>
-            <div class="selector-fna">
-                <input type="radio" name="${id}" id="${id}_f">
-                <label for="${id}_f" class="lbl-f">F</label>
+<div class="fila-at">
+    <span class="pregunta-txt">${pregunta}</span>
 
-                <input type="radio" name="${id}" id="${id}_x">
-                <label for="${id}_x" class="lbl-x">X</label>
+    <div class="selector-fna">
+        <input type="radio" name="${id}" id="${id}_f"
+               onchange="toggleObs('${id}', false)">
+        <label for="${id}_f" class="lbl-f">F</label>
 
-                <input type="radio" name="${id}" id="${id}_na">
-                <label for="${id}_na" class="lbl-na">NA</label>
-            </div>
-        </div>`;
+        <input type="radio" name="${id}" id="${id}_x"
+               onchange="toggleObs('${id}', true)">
+        <label for="${id}_x" class="lbl-x">X</label>
+
+        <input type="radio" name="${id}" id="${id}_na"
+               onchange="toggleObs('${id}', false)">
+        <label for="${id}_na" class="lbl-na">NA</label>
+    </div>
+
+    <div id="obs_${id}" style="display:none; margin-top:6px;">
+        <textarea id="obs_text_${id}"
+                  class="input-modern"
+                  rows="2"
+                  placeholder="Observación del defecto (opcional)"></textarea>
+    </div>
+</div>`;
     }
 
     /* ============================
@@ -725,21 +736,25 @@ form.getTextField("Valor_t4")
     .setText(document.getElementById("valor_t4")?.value || "");
 
 // =================TRANSFORMADOR===============
-
 const textoTrafos = generarTextoTransformadores();
 
 if (textoTrafos) {
     form.getTextField("Elementos_instalacion").setText(textoTrafos);
 }
 
-        // ❗ NO flatten todavía
-        const pdfFinal = await pdfDoc.save();
-        const blob = new Blob([pdfFinal], { type: "application/pdf" });
+// ================= DEFECTOS DEL CHECKLIST =================
+const defectos = recogerDefectos();
+form.getTextField("Defectos_observaciones")
+    .setText(textoDefectosParaPDF(defectos));
 
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "certificado_campos_texto_completo.pdf";
-        a.click();
+// ❗ NO flatten todavía
+const pdfFinal = await pdfDoc.save();
+const blob = new Blob([pdfFinal], { type: "application/pdf" });
+
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "certificado_campos_texto_completo.pdf";
+a.click();
 
     } catch (e) {
         alert("ERROR PDF: " + e.message);
@@ -809,6 +824,42 @@ cert_empresa_distribuidora.value =
 
     cambiarHoja("Certificado");
 }
+
+function toggleObs(id, show) {
+    const el = document.getElementById(`obs_${id}`);
+    if (el) el.style.display = show ? "block" : "none";
+}
+function recogerDefectos() {
+    const defectos = [];
+
+    document.querySelectorAll('.fila-at').forEach(fila => {
+        const marcadoX = fila.querySelector('input[id$="_x"]:checked');
+        if (!marcadoX) return;
+
+        const idBase = marcadoX.id.replace('_x', '');
+        const pregunta = fila.querySelector('.pregunta-txt')?.innerText || idBase;
+        const obs = document.getElementById(`obs_text_${idBase}`)?.value || "";
+
+        defectos.push({ pregunta, obs });
+    });
+
+    return defectos;
+}
+
+function textoDefectosParaPDF(defectos) {
+    if (!defectos.length) return "Sin defectos.";
+
+    let texto = "DEFECTOS DETECTADOS:\n\n";
+
+    defectos.forEach((d, i) => {
+        texto += `${i + 1}. ${d.pregunta}\n`;
+        if (d.obs) texto += `   Observación: ${d.obs}\n`;
+        texto += `\n`;
+    });
+
+    return texto;
+}
+
 
 // ===================================================
 // ARRANQUE SEGURO (LOCAL + GITHUB PAGES)
