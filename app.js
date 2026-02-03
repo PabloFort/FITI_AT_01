@@ -569,7 +569,7 @@ function toggleAplica(checkbox, idBloque) {
 async function exportarCertificadoPDF() {
     const { PDFDocument } = PDFLib;
 
-    const pdfBytes = await fetch("MODELO CERTIFICADO.pdf").then(r => r.arrayBuffer());
+  const pdfBytes = await fetch("modelo_certificado.pdf").then(r => r.arrayBuffer());
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const form = pdfDoc.getForm();
 
