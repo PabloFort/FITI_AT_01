@@ -566,6 +566,28 @@ function toggleAplica(checkbox, idBloque) {
         checkbox.checked ? "block" : "none";
 }
 
+function generarTextoTransformadores() {
+    if (contadorTrafos === 0) return "";
+
+    let texto = `Centro con ${contadorTrafos} transformador(es):\n\n`;
+
+    for (let i = 1; i <= contadorTrafos; i++) {
+        const marca = document.querySelector(`#trafo_${i}_marca`)?.value || "";
+        const modelo = document.querySelector(`#trafo_${i}_modelo`)?.value || "";
+        const numero = document.querySelector(`#trafo_${i}_numero`)?.value || "";
+        const potencia = document.querySelector(`#trafo_${i}_potencia`)?.value || "";
+
+        texto += `– Transformador ${i}:\n`;
+        if (marca) texto += `  Marca: ${marca}\n`;
+        if (modelo) texto += `  Modelo: ${modelo}\n`;
+        if (numero) texto += `  Nº: ${numero}\n`;
+        if (potencia) texto += `  Potencia: ${potencia} kVA\n`;
+        texto += `\n`;
+    }
+
+    return texto;
+}
+
 async function exportarCertificadoPDF() {
     try {
         const { PDFDocument } = PDFLib;
@@ -618,6 +640,97 @@ async function exportarCertificadoPDF() {
         // ================= FECHA =================
         form.getTextField("Fecha_ultima_inspeccion")
             .setText(cert_fecha.value || "");
+
+// ================= REGLAMENTO =================
+if (cert_inst_reglamento.value === "1982") {
+    form.getCheckBox("RCE_1982").check();
+}
+if (cert_inst_reglamento.value === "2014") {
+    form.getCheckBox("RAT_2014").check();
+}
+
+// ================= TIPO DE INSPECCIÓN =================
+const tipoPrincipal =
+    document.querySelector('input[name="insp_tipo_principal"]:checked')?.value || "";
+
+if (tipoPrincipal === "Inicial") {
+    form.getCheckBox("Inicial").check();
+
+    if (document.getElementById("insp_nueva")?.checked)
+        form.getCheckBox("Nueva").check();
+
+    if (document.getElementById("insp_ampliacion")?.checked)
+        form.getCheckBox("Ampliacion").check();
+
+    if (document.getElementById("insp_modificacion")?.checked)
+        form.getCheckBox("Modificacion").check();
+}
+
+if (tipoPrincipal === "Periodica") {
+    form.getCheckBox("Periodica").check();
+}
+
+// ================= TIPO DE INSTALACIÓN =================
+if (cert_tipo_instalacion.value === "Interior")
+    form.getCheckBox("Interior").check();
+
+if (cert_tipo_instalacion.value === "Exterior")
+    form.getCheckBox("Exterior").check();
+
+// (si más adelante usas CT poste)
+if (cert_tipo_instalacion.value === "CT_poste")
+    form.getCheckBox("CT_poste_Intemperie").check();
+
+// ================= SOBRETENSIONES =================
+if (cert_sobretensiones.value === "Si")
+    form.getCheckBox("Sobretensiones_SI").check();
+
+if (cert_sobretensiones.value === "No")
+    form.getCheckBox("Sobretensiones_NO").check();
+
+// =================LINEA DE ALIMENTACION=============
+
+if (cert_linea_alimentacion.value === "Aerea")
+    form.getCheckBox("LA").check();
+
+if (cert_linea_alimentacion.value === "Subterranea")
+    form.getCheckBox("LS").check();
+
+if (cert_linea_alimentacion.value === "Mixta")
+    form.getCheckBox("LM").check();
+
+// =================VALORES DE TIERRA===============
+
+form.getTextField("Estado_terreno")
+    .setText(document.getElementById("estado_terreno")?.value || "");
+
+form.getTextField("Tierra_1")
+    .setText(document.getElementById("tierra_1")?.value || "");
+form.getTextField("Valor_t1")
+    .setText(document.getElementById("valor_t1")?.value || "");
+
+form.getTextField("Tierra_2")
+    .setText(document.getElementById("tierra_2")?.value || "");
+form.getTextField("Valor_t2")
+    .setText(document.getElementById("valor_t2")?.value || "");
+
+form.getTextField("Tierra_3")
+    .setText(document.getElementById("tierra_3")?.value || "");
+form.getTextField("Valor_t3")
+    .setText(document.getElementById("valor_t3")?.value || "");
+
+form.getTextField("Tierra_4")
+    .setText(document.getElementById("tierra_4")?.value || "");
+form.getTextField("Valor_t4")
+    .setText(document.getElementById("valor_t4")?.value || "");
+
+// =================TRANSFORMADOR===============
+
+const textoTrafos = generarTextoTransformadores();
+
+if (textoTrafos) {
+    form.getTextField("Elementos_instalacion").setText(textoTrafos);
+}
 
         // ❗ NO flatten todavía
         const pdfFinal = await pdfDoc.save();
