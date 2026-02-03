@@ -570,17 +570,62 @@ async function exportarCertificadoPDF() {
     try {
         const { PDFDocument } = PDFLib;
 
-        // 🔥 PDF vacío de prueba (NO fetch)
-        const pdfDoc = await PDFDocument.create();
-        const page = pdfDoc.addPage([595, 842]);
-        page.drawText("PRUEBA PDF GITHUB OK", { x: 50, y: 800 });
+        const response = await fetch("modelo_certificado.pdf");
+        if (!response.ok) throw new Error("No se pudo cargar el PDF base");
 
-        const finalPdf = await pdfDoc.save();
-        const blob = new Blob([finalPdf], { type: "application/pdf" });
+        const pdfBytes = await response.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const form = pdfDoc.getForm();
+
+        // ================= CABECERA =================
+        form.getTextField("N_expediente")
+            .setText(cert_expediente.value || "");
+
+        // ================= TITULAR =================
+        form.getTextField("Nombre_titular")
+            .setText(cert_titular_nombre.value || "");
+        form.getTextField("CIF_titular")
+            .setText(cert_titular_cif.value || "");
+        form.getTextField("Telefono_titular")
+            .setText(cert_titular_telefono.value || "");
+        form.getTextField("Domicilio_social")
+            .setText(cert_titular_direccion.value || "");
+        form.getTextField("CP_titular")
+            .setText(cert_titular_cp.value || "");
+        form.getTextField("Poblacion_titular")
+            .setText(cert_titular_cp.value || "");
+        form.getTextField("Provincia_titular")
+            .setText(cert_titular_provincia.value || "");
+
+        // ================= INSTALACIÓN =================
+        form.getTextField("Denominacion_de_la_instalacion")
+            .setText(cert_inst_denominacion.value || "");
+        form.getTextField("Direccion_instalacion")
+            .setText(cert_inst_direccion.value || "");
+        form.getTextField("CP_instalacion")
+            .setText(cert_inst_cp.value || "");
+        form.getTextField("Poblacion_instalacion")
+            .setText(cert_inst_cp.value || "");
+        form.getTextField("Provincia_instalacion")
+            .setText(cert_inst_provincia.value || "");
+
+        // ================= DATOS TÉCNICOS =================
+        form.getTextField("Tensiones_servicio")
+            .setText(cert_tensiones.value || "");
+        form.getTextField("Potencia_instalada")
+            .setText(cert_potencia_total.value || "");
+
+        // ================= FECHA =================
+        form.getTextField("Fecha_ultima_inspeccion")
+            .setText(cert_fecha.value || "");
+
+        // ❗ NO flatten todavía
+        const pdfFinal = await pdfDoc.save();
+        const blob = new Blob([pdfFinal], { type: "application/pdf" });
 
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = "prueba_sin_fetch.pdf";
+        a.download = "certificado_campos_texto_completo.pdf";
         a.click();
 
     } catch (e) {
