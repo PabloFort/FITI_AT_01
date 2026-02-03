@@ -567,70 +567,26 @@ function toggleAplica(checkbox, idBloque) {
 }
 
 async function exportarCertificadoPDF() {
-    const { PDFDocument } = PDFLib;
+    try {
+        const { PDFDocument } = PDFLib;
 
-  const pdfBytes = await fetch("modelo_certificado.pdf").then(r => r.arrayBuffer());
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-    const form = pdfDoc.getForm();
+        // 🔥 PDF vacío de prueba (NO fetch)
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage([595, 842]);
+        page.drawText("PRUEBA PDF GITHUB OK", { x: 50, y: 800 });
 
-    // ========= CABECERA =========
-    form.getTextField("N_Expediente").setText(cert_expediente.value);
-    form.getTextField("Fecha_Inspeccion").setText(cert_fecha.value);
+        const finalPdf = await pdfDoc.save();
+        const blob = new Blob([finalPdf], { type: "application/pdf" });
 
-    // ========= TITULAR =========
-    form.getTextField("Titular_Nombre").setText(cert_titular_nombre.value);
-    form.getTextField("Titular_CIF").setText(cert_titular_cif.value);
-    form.getTextField("Titular_Telefono").setText(cert_titular_telefono.value);
-    form.getTextField("Titular_Direccion").setText(cert_titular_direccion.value);
-    form.getTextField("Titular_CP").setText(cert_titular_cp.value);
-    form.getTextField("Titular_Provincia").setText(cert_titular_provincia.value);
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "prueba_sin_fetch.pdf";
+        a.click();
 
-    // ========= INSTALACIÓN =========
-    form.getTextField("Inst_Denominacion").setText(cert_inst_denominacion.value);
-    form.getTextField("Inst_Direccion").setText(cert_inst_direccion.value);
-    form.getTextField("Inst_CP").setText(cert_inst_cp.value);
-    form.getTextField("Inst_Provincia").setText(cert_inst_provincia.value);
-    form.getTextField("Inst_Registro").setText(cert_inst_registro.value);
-
-    // ========= REGLAMENTO =========
-    if (cert_inst_reglamento.value === "1982") {
-        form.getCheckBox("Reglamento_1982").check();
+    } catch (e) {
+        alert("ERROR PDF: " + e.message);
+        console.error(e);
     }
-    if (cert_inst_reglamento.value === "2014") {
-        form.getCheckBox("Reglamento_2014").check();
-    }
-
-    // ========= DATOS TÉCNICOS =========
-    if (cert_tipo_instalacion.value === "Interior")
-        form.getCheckBox("Tipo_Interior").check();
-    if (cert_tipo_instalacion.value === "Exterior")
-        form.getCheckBox("Tipo_Exterior").check();
-
-    if (cert_linea_alimentacion.value === "Aerea")
-        form.getCheckBox("Linea_Aerea").check();
-    if (cert_linea_alimentacion.value === "Subterranea")
-        form.getCheckBox("Linea_Subterranea").check();
-    if (cert_linea_alimentacion.value === "Mixta")
-        form.getCheckBox("Linea_Mixta").check();
-
-    if (cert_sobretensiones.value === "Si")
-        form.getCheckBox("Sobretensiones_Si").check();
-    if (cert_sobretensiones.value === "No")
-        form.getCheckBox("Sobretensiones_No").check();
-
-    form.getTextField("Tensiones_Principales").setText(cert_tensiones.value);
-    form.getTextField("Potencia_Instalada").setText(cert_potencia_total.value);
-
-    // ========= CERRAR PDF =========
-    form.flatten();
-
-    const finalPdf = await pdfDoc.save();
-    const blob = new Blob([finalPdf], { type: "application/pdf" });
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `Certificado_${cert_expediente.value}.pdf`;
-    a.click();
 }
 
 function generarCertificado() {
