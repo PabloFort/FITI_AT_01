@@ -742,10 +742,26 @@ if (textoTrafos) {
     form.getTextField("Elementos_instalacion").setText(textoTrafos);
 }
 
-// ================= DEFECTOS DEL CHECKLIST =================
+// ================= DEFECTOS DEL CHECKLIST (TABLA PDF) =================
 const defectos = recogerDefectos();
-form.getTextField("Defectos_observaciones")
-    .setText(textoDefectosParaPDF(defectos));
+
+// Máximo de defectos que admite el PDF (según plantilla)
+const MAX_DEFECTOS = 10;
+
+defectos.slice(0, MAX_DEFECTOS).forEach((def, i) => {
+    const idx = i + 1;
+
+    // Descripción / ubicación del defecto
+    form.getTextField(`D${idx}`).setText(
+        def.obs
+            ? `${def.pregunta}. ${def.obs}`
+            : def.pregunta
+    );
+
+    // (opcional, por ahora lo dejamos vacío o automático)
+    // form.getTextField(`CD${idx}`).setText("Leve / Grave");
+    // form.getTextField(`PLZ${idx}`).setText("6 meses");
+});
 
 // ❗ NO flatten todavía
 const pdfFinal = await pdfDoc.save();
