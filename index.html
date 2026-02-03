@@ -247,17 +247,15 @@
             <label><input type="radio" name="sobretensiones" value="No"> No</label>
         </div>
 
-        <label class="mini-label">Tensiones de servicio 1º / 2º (V)</label>
-        <input class="input-modern">
+            <label class="mini-label">Tensiones de servicio 1º / 2º (V)</label>
+            <input id="inst_tensiones" class="input-modern">
 
-        <label class="mini-label">Potencia instalada total (kVA)</label>
-        <input class="input-modern">
+            <label class="mini-label">Potencia instalada total (kVA)</label>
+            <input id="inst_potencia_total" class="input-modern">
 
-        <label class="mini-label">Protecciones de línea (I-defecto / tiempo desconexión)</label>
-        <input class="input-modern">
+            <label class="mini-label">Empresa de distribución</label>
+            <input id="inst_empresa_distribuidora" class="input-modern">
 
-        <label class="mini-label">Empresa de distribución</label>
-        <input class="input-modern">
     </div>
 
     <!-- ===== NAVEGACIÓN ===== -->
@@ -292,8 +290,95 @@
             <button class="btn-continue" id="btn-siguiente-seccion" onclick="irAdelante()">SIGUIENTE →</button>
         </div>
     </div>
+<!-- ================= HOJA CERTIFICADO ================= -->
+<div id="hojaCertificado" class="page" style="display:none;">
+    <h1>Certificado de Inspección AT</h1>
+
+    <!-- ===== CABECERA ===== -->
+    <div class="card">
+        <p class="section-tag">Cabecera</p>
+
+        <label class="mini-label">Nº Expediente</label>
+        <input id="cert_expediente" class="input-modern" readonly>
+
+        <label class="mini-label">Fecha inspección</label>
+        <input id="cert_fecha" class="input-modern" readonly>
+    </div>
+
+    <!-- ===== TITULAR ===== -->
+    <div class="card">
+        <p class="section-tag">Titular</p>
+
+        <input id="cert_titular_nombre" class="input-modern" placeholder="Nombre" readonly>
+        <input id="cert_titular_cif" class="input-modern" placeholder="CIF" readonly>
+        <input id="cert_titular_telefono" class="input-modern" placeholder="Teléfono" readonly>
+        <input id="cert_titular_direccion" class="input-modern" placeholder="Dirección" readonly>
+        <input id="cert_titular_cp" class="input-modern" placeholder="CP / Localidad" readonly>
+        <input id="cert_titular_provincia" class="input-modern" placeholder="Provincia" readonly>
+    </div>
+
+    <!-- ===== INSTALACIÓN ===== -->
+    <div class="card">
+        <p class="section-tag">Instalación</p>
+
+        <input id="cert_inst_denominacion" class="input-modern" placeholder="Denominación" readonly>
+        <input id="cert_inst_direccion" class="input-modern" placeholder="Dirección" readonly>
+        <input id="cert_inst_cp" class="input-modern" placeholder="CP / Localidad" readonly>
+        <input id="cert_inst_provincia" class="input-modern" placeholder="Provincia" readonly>
+        <input id="cert_inst_registro" class="input-modern" placeholder="Nº Registro" readonly>
+        <input id="cert_inst_reglamento" class="input-modern" placeholder="Reglamento" readonly>
+    </div>
+
+    <!-- ===== TIPO DE INSPECCIÓN ===== -->
+    <div class="card">
+        <p class="section-tag">Tipo de inspección</p>
+
+        <input id="cert_tipo_inspeccion" class="input-modern" readonly>
+        <input id="cert_subtipo_inspeccion" class="input-modern" readonly>
+    </div>
+
+    <!-- ===== TÉCNICOS ===== -->
+    <div class="card">
+        <p class="section-tag">Técnicos</p>
+
+        <input id="cert_proyectista" class="input-modern" placeholder="Proyectista" readonly>
+        <input id="cert_director" class="input-modern" placeholder="Director de obra" readonly>
+        <input id="cert_instalador" class="input-modern" placeholder="Instalador / Mantenedor" readonly>
+    </div>
+
+    <!-- ===== DATOS TÉCNICOS ===== -->
+    <div class="card">
+        <p class="section-tag">Datos técnicos</p>
+
+        <input id="cert_tipo_instalacion" class="input-modern" readonly>
+        <input id="cert_linea_alimentacion" class="input-modern" readonly>
+        <input id="cert_sobretensiones" class="input-modern" readonly>
+        <input id="cert_tensiones" class="input-modern" readonly>
+        <input id="cert_potencia_total" class="input-modern" readonly>
+        <input id="cert_empresa_distribuidora" class="input-modern" readonly>
+    </div>
+
+    <!-- ===== RESULTADO ===== -->
+    <div class="card">
+        <p class="section-tag">Resultado de la inspección</p>
+
+        <textarea id="cert_resultado" class="input-modern" rows="4" readonly></textarea>
+    </div>
+
+    <div class="footer-nav">
+        <button class="btn-back" onclick="cambiarHoja(4)">← Volver</button>
+        <button class="btn-continue" onclick="alert('PDF en el siguiente paso')">EXPORTAR PDF</button>
+        
+        <button class="btn-continue" onclick="exportarCertificadoPDF()">
+        EXPORTAR PDF
+        </button>
+
+    </div>
+</div>
 
 </div>
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="app.js" defer></script>
 
 <script src="app.js" defer></script>
 </body>

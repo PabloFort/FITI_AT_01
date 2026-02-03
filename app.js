@@ -364,14 +364,16 @@ function filaChecklist(id, pregunta) {
         </div>`;
     }
 }
-
 function irAdelante(){
-    if(seccionActual<seccionesChecklist.length-1){
-        seccionActual++; renderSeccion();
+    if (seccionActual < seccionesChecklist.length - 1) {
+        seccionActual++;
+        renderSeccion();
     } else {
-        alert("Inspección finalizada (pendiente PDF)");
+        // ✅ FIN DEL CHECKLIST → GENERAR CERTIFICADO
+        generarCertificado();
     }
 }
+
 function irAtras(){
     if(seccionActual>0){ seccionActual--; renderSeccion(); }
     else cambiarHoja(3);
@@ -562,6 +564,136 @@ function elem(nombre, conTemp = false) {
 function toggleAplica(checkbox, idBloque) {
     document.getElementById(idBloque).style.display =
         checkbox.checked ? "block" : "none";
+}
+
+async function exportarCertificadoPDF() {
+    const { PDFDocument } = PDFLib;
+
+    const pdfBytes = await fetch("MODELO CERTIFICADO.pdf").then(r => r.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const form = pdfDoc.getForm();
+
+    // ========= CABECERA =========
+    form.getTextField("N_Expediente").setText(cert_expediente.value);
+    form.getTextField("Fecha_Inspeccion").setText(cert_fecha.value);
+
+    // ========= TITULAR =========
+    form.getTextField("Titular_Nombre").setText(cert_titular_nombre.value);
+    form.getTextField("Titular_CIF").setText(cert_titular_cif.value);
+    form.getTextField("Titular_Telefono").setText(cert_titular_telefono.value);
+    form.getTextField("Titular_Direccion").setText(cert_titular_direccion.value);
+    form.getTextField("Titular_CP").setText(cert_titular_cp.value);
+    form.getTextField("Titular_Provincia").setText(cert_titular_provincia.value);
+
+    // ========= INSTALACIÓN =========
+    form.getTextField("Inst_Denominacion").setText(cert_inst_denominacion.value);
+    form.getTextField("Inst_Direccion").setText(cert_inst_direccion.value);
+    form.getTextField("Inst_CP").setText(cert_inst_cp.value);
+    form.getTextField("Inst_Provincia").setText(cert_inst_provincia.value);
+    form.getTextField("Inst_Registro").setText(cert_inst_registro.value);
+
+    // ========= REGLAMENTO =========
+    if (cert_inst_reglamento.value === "1982") {
+        form.getCheckBox("Reglamento_1982").check();
+    }
+    if (cert_inst_reglamento.value === "2014") {
+        form.getCheckBox("Reglamento_2014").check();
+    }
+
+    // ========= DATOS TÉCNICOS =========
+    if (cert_tipo_instalacion.value === "Interior")
+        form.getCheckBox("Tipo_Interior").check();
+    if (cert_tipo_instalacion.value === "Exterior")
+        form.getCheckBox("Tipo_Exterior").check();
+
+    if (cert_linea_alimentacion.value === "Aerea")
+        form.getCheckBox("Linea_Aerea").check();
+    if (cert_linea_alimentacion.value === "Subterranea")
+        form.getCheckBox("Linea_Subterranea").check();
+    if (cert_linea_alimentacion.value === "Mixta")
+        form.getCheckBox("Linea_Mixta").check();
+
+    if (cert_sobretensiones.value === "Si")
+        form.getCheckBox("Sobretensiones_Si").check();
+    if (cert_sobretensiones.value === "No")
+        form.getCheckBox("Sobretensiones_No").check();
+
+    form.getTextField("Tensiones_Principales").setText(cert_tensiones.value);
+    form.getTextField("Potencia_Instalada").setText(cert_potencia_total.value);
+
+    // ========= CERRAR PDF =========
+    form.flatten();
+
+    const finalPdf = await pdfDoc.save();
+    const blob = new Blob([finalPdf], { type: "application/pdf" });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Certificado_${cert_expediente.value}.pdf`;
+    a.click();
+}
+
+function generarCertificado() {
+    const cert = {
+        expediente: document.getElementById("expediente")?.value || "",
+        fecha: new Date().toLocaleDateString(),
+
+        titular: {
+            nombre: titular_nombre.value,
+            cif: titular_cif.value,
+            telefono: titular_telefono.value,
+            direccion: titular_direccion.value,
+            cp: titular_cp.value,
+            provincia: titular_provincia.value
+        },
+
+        instalacion: {
+            denominacion: inst_denominacion.value,
+            direccion: inst_direccion.value,
+            cp: inst_cp.value,
+            provincia: inst_provincia.value,
+            registro: inst_registro.value,
+            reglamento: document.querySelector('input[name="inst_reglamento"]:checked')?.value || ""
+        }
+    };
+
+    // Rellenar formulario certificado
+    cert_expediente.value = cert.expediente;
+    cert_fecha.value = cert.fecha;
+
+    cert_titular_nombre.value = cert.titular.nombre;
+    cert_titular_cif.value = cert.titular.cif;
+    cert_titular_telefono.value = cert.titular.telefono;
+    cert_titular_direccion.value = cert.titular.direccion;
+    cert_titular_cp.value = cert.titular.cp;
+    cert_titular_provincia.value = cert.titular.provincia;
+
+    cert_inst_denominacion.value = cert.instalacion.denominacion;
+    cert_inst_direccion.value = cert.instalacion.direccion;
+    cert_inst_cp.value = cert.instalacion.cp;
+    cert_inst_provincia.value = cert.instalacion.provincia;
+    cert_inst_registro.value = cert.instalacion.registro;
+    cert_inst_reglamento.value = cert.instalacion.reglamento;
+
+// ===== DATOS TÉCNICOS =====
+const tipoInst = document.querySelector('input[name="tipo_inst"]:checked')?.value || "";
+const lineaAlim = document.querySelector('input[name="linea_alim"]:checked')?.value || "";
+const sobret = document.querySelector('input[name="sobretensiones"]:checked')?.value || "";
+
+cert_tipo_instalacion.value = tipoInst;
+cert_linea_alimentacion.value = lineaAlim;
+cert_sobretensiones.value = sobret;
+
+cert_tensiones.value =
+    document.querySelector('#inst_tensiones')?.value || "";
+
+cert_potencia_total.value =
+    document.querySelector('#inst_potencia_total')?.value || "";
+
+cert_empresa_distribuidora.value =
+    document.querySelector('#inst_empresa_distribuidora')?.value || "";
+
+    cambiarHoja("Certificado");
 }
 
 // ===================================================
