@@ -837,6 +837,8 @@ cert_potencia_total.value =
 
 cert_empresa_distribuidora.value =
     document.querySelector('#inst_empresa_distribuidora')?.value || "";
+// 👇 MOSTRAR ANEXO – PÁGINA 6
+    document.getElementById("pagina6-tierras").style.display = "block";
 
     cambiarHoja("Certificado");
 }
