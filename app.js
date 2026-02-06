@@ -233,6 +233,10 @@ function cambiarHoja(n){
     if(n === 4){ seccionActual = 0; renderSeccion(); }
     if(n === 1) setTimeout(iniciarFirma,50);
 
+// ===== PAGINADO ANEXO =====
+const paginaActual = document.getElementById("pagina-actual");
+if (paginaActual) paginaActual.innerText = n;
+
     window.scrollTo(0,0);
 }
 

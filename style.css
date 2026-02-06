@@ -302,4 +302,14 @@ input:checked + .lbl-na {
     min-width: 180px;
     font-weight: 600;
 }
+.cabecera-anexo {
+    font-size: 0.7rem;
+    line-height: 1.3;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    color: #333;
+}
+
 
