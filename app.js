@@ -866,7 +866,7 @@ cert_potencia_total.value =
 cert_empresa_distribuidora.value =
     document.querySelector('#inst_empresa_distribuidora')?.value || "";
 
-    cambiarHoja("Certificado");
+    cambiarHoja(5);
 }
 
 function toggleObs(id, show) {
