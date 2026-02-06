@@ -5,6 +5,22 @@ let equiposMedida = [];
 let datosSesion = { inspector:"", expediente:"", gps:"", firmaImg:"" };
 let seccionActual = 1;
 let contadorTrafos = 0;
+let contadorTierras = 0;
+let fotoTierraBase64 = "";
+
+function cargarFotoTierra(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        fotoTierraBase64 = e.target.result;
+        const img = document.getElementById("preview_foto_tierra");
+        img.src = fotoTierraBase64;
+        img.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+}
 
 // ===================================================
 // CHECKLIST (INTACTO)
@@ -889,6 +905,37 @@ function textoDefectosParaPDF(defectos) {
     });
 
     return texto;
+}
+
+function añadirSistemaTierra() {
+    contadorTierras++;
+    const id = contadorTierras;
+
+    const cont = document.getElementById("contenedor-tierras");
+
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <p class="section-tag">Sistema de puesta a tierra ${id}</p>
+
+      <label class="mini-label">Sistema de puesta a tierra</label>
+      <input id="tierra_sistema_${id}" class="input-modern">
+
+      <div class="grid-tecnico">
+        <div>
+          <label class="mini-label">Valor inspección (Ω)</label>
+          <input id="tierra_valor_${id}" class="input-modern" type="number" step="any">
+        </div>
+
+        <div>
+          <label class="mini-label">Valor anterior (Ω)</label>
+          <input id="tierra_valor_ant_${id}" class="input-modern" type="number" step="any">
+        </div>
+      </div>
+    `;
+
+    cont.appendChild(div);
 }
 
 function plazoSegunCalificacion(calificacion) {

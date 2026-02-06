@@ -290,6 +290,67 @@
             <button class="btn-continue" id="btn-siguiente-seccion" onclick="irAdelante()">SIGUIENTE →</button>
         </div>
     </div>
+
+<!-- ================= HOJA 6 – MEDICIÓN DE PUESTA A TIERRA ================= -->
+<div id="hoja6" class="page" style="display:none;">
+
+    <h1>ANEXO 1 – ITI-AT-001</h1>
+    <p class="step-subtitle">
+        FITI-AT-001/01 REV3 · Página 6 de 10<br>
+        <b>Tabla 1 – Valores de la resistencia de puesta a tierra</b>
+    </p>
+
+    <!-- ===== CONDICIONES DE MEDICIÓN ===== -->
+    <div class="card">
+        <p class="section-tag">Condiciones de la medición</p>
+
+        <label><input type="radio" name="estado_terreno" value="Seco"> Seco</label>
+        <label><input type="radio" name="estado_terreno" value="Humedo"> Húmedo</label>
+        <label><input type="radio" name="estado_terreno" value="Mojado"> Mojado</label>
+    </div>
+
+    <!-- ===== SISTEMAS DE PUESTA A TIERRA ===== -->
+    <div class="card">
+        <p class="section-tag">Sistemas de puesta a tierra</p>
+
+        <div id="contenedor-tierras"></div>
+
+        <button class="btn-add-trafo" type="button"
+                onclick="añadirSistemaTierra()">
+            + Añadir sistema de puesta a tierra
+        </button>
+    </div>
+
+    <!-- ===== OBSERVACIONES ===== -->
+    <div class="card">
+        <p class="section-tag">Observaciones</p>
+        <textarea id="obs_tierras"
+                  class="input-modern"
+                  rows="3"
+                  placeholder="Observaciones sobre la medición de tierras"></textarea>
+    </div>
+
+    <!-- ===== FOTO DE LA MEDICIÓN ===== -->
+    <div class="card">
+        <p class="section-tag">Fotografía de la medición</p>
+
+        <input type="file"
+               id="foto_medida_tierra"
+               accept="image/*"
+               capture="environment">
+
+        <img id="preview_foto_tierra"
+             style="display:none; margin-top:10px; max-width:100%; border-radius:8px;">
+    </div>
+
+    <!-- ===== NAVEGACIÓN ===== -->
+    <div class="footer-nav">
+        <button class="btn-back" onclick="cambiarHoja(5)">← Volver</button>
+        <button class="btn-continue" onclick="cambiarHoja(7)">SIGUIENTE →</button>
+    </div>
+
+</div>
+
 <!-- ================= HOJA CERTIFICADO ================= -->
 <div id="hojaCertificado" class="page" style="display:none;">
     <h1>Certificado de Inspección AT</h1>
