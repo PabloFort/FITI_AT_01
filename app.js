@@ -244,7 +244,7 @@ function cambiarHoja(n){
 
     document.getElementById("hoja"+n).style.display = "block";
 
-    if(n === 2) renderDoc();            // 🔴 ESTO FALTABA
+//  if(n === 2) renderDoc();            // 🔴 ESTO FALTABA
     if(n === 3 && contadorTrafos === 0) añadirFormularioTrafo();
     if(n === 4){ seccionActual = 0; renderSeccion(); }
     if(n === 1) setTimeout(iniciarFirma,50);
