@@ -744,24 +744,30 @@ if (textoTrafos) {
 
 // ================= DEFECTOS DEL CHECKLIST (TABLA PDF) =================
 const defectos = recogerDefectos();
-
-// Máximo de defectos que admite el PDF (según plantilla)
 const MAX_DEFECTOS = 10;
 
 defectos.slice(0, MAX_DEFECTOS).forEach((def, i) => {
     const idx = i + 1;
 
-    // Descripción / ubicación del defecto
-    form.getTextField(`D${idx}`).setText(
-        def.obs
-            ? `${def.pregunta}. ${def.obs}`
-            : def.pregunta
-    );
+    // Nº
+    form.getTextField(`N${idx}`).setText(String(idx));
 
-    // (opcional, por ahora lo dejamos vacío o automático)
-    // form.getTextField(`CD${idx}`).setText("Leve / Grave");
-    // form.getTextField(`PLZ${idx}`).setText("6 meses");
+    // REF (numeración checklist)
+    form.getTextField(`RF${idx}`).setText(def.ref || "");
+
+    // Descripción + observación
+    const descripcion = def.obs
+        ? `${def.texto}. ${def.obs}`
+        : def.texto;
+
+    form.getTextField(`D${idx}`).setText(descripcion);
+
+    // Calificación: se deja vacía (la elige el inspector en el PDF)
+    // form.getTextField(`CD${idx}`)
+
+    // Plazo: se calculará después según CDx
 });
+
 
 // ❗ NO flatten todavía
 const pdfFinal = await pdfDoc.save();
@@ -853,11 +859,20 @@ function recogerDefectos() {
         if (!marcadoX) return;
 
         const idBase = marcadoX.id.replace('_x', '');
-        const pregunta = fila.querySelector('.pregunta-txt')?.innerText || idBase;
+        const textoCompleto = fila.querySelector('.pregunta-txt')?.innerText || "";
+        const match = textoCompleto.match(/^([\d.]+)\s+(.*)$/);
+
+        const ref = match ? match[1] : "";
+        const texto = match ? match[2] : textoCompleto;
+
         const obs = document.getElementById(`obs_text_${idBase}`)?.value || "";
 
-        defectos.push({ pregunta, obs });
-    });
+        defectos.push({
+                    ref,
+                    texto,
+                    obs
+});
+
 
     return defectos;
 }
@@ -876,6 +891,12 @@ function textoDefectosParaPDF(defectos) {
     return texto;
 }
 
+function plazoSegunCalificacion(calificacion) {
+    if (calificacion === "Leve") return "Próxima inspección";
+    if (calificacion === "Grave") return "6 meses";
+    if (calificacion === "Muy Grave") return "Inmediato";
+    return "";
+}
 
 // ===================================================
 // ARRANQUE SEGURO (LOCAL + GITHUB PAGES)
