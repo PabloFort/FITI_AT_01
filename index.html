@@ -12,65 +12,67 @@
 <div class="container">
 
 <!-- ================= HOJA 1 ================= -->
-<div id="hoja1" class="page">
+<div id="hoja1" class="page" data-hoja="nav">
     <h1>Registro de Inspección</h1>
 
     <label>Inspector</label>
     <input id="inspector">
 
-    <label>Nº Expediente</label>
+    <label>Expediente</label>
     <input id="expediente">
 
-    <h3>Equipos de medida</h3>
-    <input id="eq-referencia">
-    <button onclick="añadirEquipoMedida()">+</button>
-    <ul id="lista-equipos"></ul>
+    <div>
+        <input id="eq-referencia">
+        <button onclick="añadirEquipoMedida()">+</button>
+        <ul id="lista-equipos"></ul>
+    </div>
 
-    <h3>Firma</h3>
-    <canvas id="canvas-firma" style="border:1px solid #000; width:100%; height:150px;"></canvas>
+    <canvas id="canvas-firma"></canvas>
     <button onclick="limpiarFirma()">Borrar firma</button>
 
-    <button onclick="iniciarInspeccion()">CAPTURAR GPS</button>
-    <p>GPS: <span id="gps-display"></span></p>
+    <button onclick="iniciarInspeccion()">Capturar GPS</button>
+    <span id="gps-display"></span>
 
-    <button onclick="cambiarHoja(2)">CONTINUAR</button>
+    <button onclick="cambiarHoja(2)">Continuar</button>
 </div>
 
 <!-- ================= HOJA 2 ================= -->
-<div id="hoja2" class="page" style="display:none">
-    <h1>Datos titular</h1>
-    <input id="titular_nombre" placeholder="Nombre">
-    <input id="titular_cif" placeholder="CIF">
-    <button onclick="cambiarHoja(3)">CONTINUAR</button>
+<div id="hoja2" class="page" data-hoja="nav" style="display:none;">
+    <h1>Datos Titular</h1>
+    <input id="titular_nombre">
+    <input id="titular_cif">
+    <button onclick="cambiarHoja(3)">Continuar</button>
 </div>
 
 <!-- ================= HOJA 3 ================= -->
-<div id="hoja3" class="page" style="display:none">
+<div id="hoja3" class="page" data-hoja="nav" style="display:none;">
     <h1>Transformadores</h1>
     <div id="contenedor-trafos-datos"></div>
     <button onclick="añadirFormularioTrafo()">Añadir trafo</button>
-    <button onclick="cambiarHoja(4)">CHECKLIST</button>
+    <button onclick="cambiarHoja(4)">Checklist</button>
 </div>
 
 <!-- ================= HOJA 4 ================= -->
-<div id="hoja4" class="page" style="display:none">
+<div id="hoja4" class="page" data-hoja="nav" style="display:none;">
     <h1 id="titulo-seccion"></h1>
     <div id="contenedor-preguntas"></div>
-
     <button onclick="irAtras()">←</button>
     <button onclick="irAdelante()">→</button>
 </div>
 
 <!-- ================= HOJA 5 CERTIFICADO ================= -->
-<div id="hoja5" class="page" style="display:none">
+<div id="hoja5" class="page" data-hoja="nav" style="display:none;">
     <h1>Certificado</h1>
+    <input id="cert_expediente">
+    <input id="cert_fecha">
+    <button onclick="exportarCertificadoPDF()">Exportar PDF</button>
+</div>
 
-    <input id="cert_expediente" readonly>
-    <input id="cert_fecha" readonly>
-
-    <textarea id="cert_resultado" rows="6" readonly></textarea>
-
-    <button onclick="exportarCertificadoPDF()">EXPORTAR PDF</button>
+<!-- ================= PÁGINA ANEXO / ITI / TIERRAS ================= -->
+<!-- ⚠️ NO es hoja de navegación -->
+<div class="page-anexo">
+    <h2>ANEXO 1 ITI-AT-001 – Página 6 de 10</h2>
+    <!-- aquí tus tierras -->
 </div>
 
 </div>
