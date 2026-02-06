@@ -1,448 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="FITI AT">
-    
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4345/4345638.png">
-    <link rel="manifest" href="manifest.json">
-
-    <title>FITI – Inspección AT</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FITI AT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="container">
 
-    <!-- ================= HOJA 1 ================= -->
-    <div id="hoja1" class="page">
-        <h1 class="main-title">Registro de Inspección</h1>
-        <p class="step-subtitle">Fase 1: Preparación y Geolocalización</p>
+<!-- ================= HOJA 1 ================= -->
+<div id="hoja1" class="page">
+    <h1>Registro de Inspección</h1>
 
-        <div class="card">
-            <label class="label-bold">Nombre del Inspector *</label>
-            <input id="inspector" class="input-modern">
+    <label>Inspector</label>
+    <input id="inspector">
 
-            <label class="label-bold" style="margin-top:10px;">Nº Expediente *</label>
-            <input id="expediente" class="input-modern">
-        </div>
+    <label>Nº Expediente</label>
+    <input id="expediente">
 
-        <div class="card">
-            <label class="label-bold">Equipos de Medida</label>
-            <div class="input-grupal">
-                <input id="eq-referencia" class="input-modern">
-                <button type="button" onclick="añadirEquipoMedida()">+</button>
-            </div>
-            <ul id="lista-equipos"></ul>
-        </div>
+    <h3>Equipos de medida</h3>
+    <input id="eq-referencia">
+    <button onclick="añadirEquipoMedida()">+</button>
+    <ul id="lista-equipos"></ul>
 
-        <div class="card">
-            <label class="label-bold">Firma del Técnico</label>
-            <div class="signature-wrapper">
-                <canvas id="canvas-firma"></canvas>
-            </div>
-            <button type="button" class="btn-clear" onclick="limpiarFirma()">✖ Borrar Firma</button>
-        </div>
+    <h3>Firma</h3>
+    <canvas id="canvas-firma" style="border:1px solid #000; width:100%; height:150px;"></canvas>
+    <button onclick="limpiarFirma()">Borrar firma</button>
 
-        <button class="btn-gps-action" onclick="iniciarInspeccion()">🚀 CAPTURAR GPS E INICIAR</button>
+    <button onclick="iniciarInspeccion()">CAPTURAR GPS</button>
+    <p>GPS: <span id="gps-display"></span></p>
 
-        <div id="datos-inicio" style="display:none;">
-            <p>📍 GPS: <span id="gps-display"></span></p>
-            <!-- 🔧 ANTES iba a hoja2 (DOCUMENTACIÓN) -->
-            <!-- ✅ AHORA va directo a DATOS DEL TRAFO -->
-            <button class="btn-continue" onclick="cambiarHoja(2)">CONTINUAR →</button>
-        </div>
-    </div>
-
-<!-- ================= HOJA 2 – DATOS TITULAR E INSTALACIÓN ================= -->
-<div id="hoja2" class="page" style="display:none;">
-    <h1>Datos del Titular e Instalación</h1>
-
-    <!-- ===== TITULAR ===== -->
-    <div class="card">
-        <p class="section-tag">Titular</p>
-
-        <label class="mini-label">Nombre / Razón social</label>
-        <input id="titular_nombre" class="input-modern">
-
-        <div class="grid-tecnico">
-            <div>
-                <label class="mini-label">CIF</label>
-                <input id="titular_cif" class="input-modern">
-            </div>
-            <div>
-                <label class="mini-label">Teléfono</label>
-                <input id="titular_telefono" class="input-modern">
-            </div>
-        </div>
-
-        <label class="mini-label">Dirección</label>
-        <input id="titular_direccion" class="input-modern">
-
-        <div class="grid-tecnico">
-            <div>
-                <label class="mini-label">CP / Localidad</label>
-                <input id="titular_cp" class="input-modern">
-            </div>
-            <div>
-                <label class="mini-label">Provincia</label>
-                <input id="titular_provincia" class="input-modern">
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== INSTALACIÓN ===== -->
-    <div class="card">
-        <p class="section-tag">Instalación</p>
-
-        <label class="mini-label">Denominación de la instalación</label>
-        <input id="inst_denominacion" class="input-modern">
-
-        <label class="mini-label">Ubicación (coordenadas)</label>
-        <input id="inst_coordenadas" class="input-modern">
-
-        <label class="mini-label">Dirección</label>
-        <input id="inst_direccion" class="input-modern">
-
-        <div class="grid-tecnico">
-            <div>
-                <label class="mini-label">CP / Localidad</label>
-                <input id="inst_cp" class="input-modern">
-            </div>
-            <div>
-                <label class="mini-label">Provincia</label>
-                <input id="inst_provincia" class="input-modern">
-            </div>
-        </div>
-
-        <div class="grid-tecnico">
-            <div>
-                <label class="mini-label">Nº Registro</label>
-                <input id="inst_registro" class="input-modern">
-            </div>
-            <div>
-                <label class="mini-label">Fecha última inspección</label>
-                <input id="inst_ultima" class="input-modern">
-            </div>
-            <div>
-                <label class="mini-label">Reglamento</label><br>
-                <label><input type="radio" name="inst_reglamento" value="1982"> 1982</label>
-                <label><input type="radio" name="inst_reglamento" value="2014"> 2014</label>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== TIPO DE INSPECCIÓN ===== -->
-    <div class="card">
-        <p class="section-tag">Tipo de inspección</p>
-
-        <div class="grid-tecnico">
-            <label>
-                <input type="radio" name="insp_tipo_principal" value="Inicial"
-                       onchange="toggleInicial(true)">
-                Inicial
-            </label>
-            <label>
-                <input type="radio" name="insp_tipo_principal" value="Periodica"
-                       onchange="toggleInicial(false)">
-                Periódica
-            </label>
-        </div>
-
-        <!-- SOLO SI ES INICIAL -->
-        <div id="bloque_inicial"
-             style="display:none; margin-top:12px; padding-left:10px; border-left:3px solid #3b82f6;">
-
-            <label><input type="checkbox" id="insp_nueva"> Nueva</label>
-
-            <div class="grid-tecnico" style="margin-top:6px;">
-                <label>
-                    <input type="checkbox" id="insp_ampliacion"
-                           onchange="document.getElementById('kw_ampliacion').style.display=this.checked?'block':'none'">
-                    Ampliación
-                </label>
-                <input id="kw_ampliacion" class="input-mini" placeholder="kW ampliados"
-                       style="display:none;">
-            </div>
-
-            <div class="grid-tecnico" style="margin-top:6px;">
-                <label>
-                    <input type="checkbox" id="insp_modificacion"
-                           onchange="document.getElementById('kw_modificacion').style.display=this.checked?'block':'none'">
-                    Modificación
-                </label>
-                <input id="kw_modificacion" class="input-mini" placeholder="kW modificados"
-                       style="display:none;">
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== PROYECTISTA ===== -->
-    <div class="card">
-        <p class="section-tag">Proyectista (solo inspecciones iniciales)</p>
-
-        <div class="grid-tecnico">
-            <input class="input-modern" placeholder="Nombre">
-            <input class="input-modern" placeholder="Apellidos">
-        </div>
-
-        <div class="grid-tecnico">
-            <input class="input-modern" placeholder="Colegio">
-            <input class="input-modern" placeholder="Nº colegiado">
-        </div>
-    </div>
-
-    <!-- ===== DIRECTOR DE OBRA ===== -->
-    <div class="card">
-        <p class="section-tag">Director de obra (solo inspecciones iniciales)</p>
-
-        <div class="grid-tecnico">
-            <input class="input-modern" placeholder="Nombre">
-            <input class="input-modern" placeholder="Apellidos">
-        </div>
-
-        <div class="grid-tecnico">
-            <input class="input-modern" placeholder="Colegio">
-            <input class="input-modern" placeholder="Nº colegiado">
-        </div>
-    </div>
-
-    <!-- ===== INSTALADOR / MANTENEDOR ===== -->
-    <div class="card">
-        <p class="section-tag">Instalador / Mantenedor</p>
-
-        <div class="grid-tecnico">
-            <input class="input-modern" placeholder="Empresa">
-            <input class="input-modern" placeholder="CIF / NIF">
-        </div>
-
-        <input class="input-modern" placeholder="Nombre responsable">
-    </div>
-
-    <!-- ===== DATOS TÉCNICOS ===== -->
-    <div class="card">
-        <p class="section-tag">Datos técnicos de la instalación</p>
-
-        <div class="fila-dato">
-            <span class="etiqueta">Tipo de instalación</span>
-            <label><input type="radio" name="tipo_inst" value="Interior"> Interior</label>
-            <label><input type="radio" name="tipo_inst" value="Exterior"> Exterior</label>
-        </div>
-
-        <div class="fila-dato">
-            <span class="etiqueta">Línea de alimentación</span>
-            <label><input type="radio" name="linea_alim" value="Aerea"> Aérea</label>
-            <label><input type="radio" name="linea_alim" value="Subterranea"> Subterránea</label>
-            <label><input type="radio" name="linea_alim" value="Mixta"> Mixta</label>
-        </div>
-
-        <div class="fila-dato">
-            <span class="etiqueta">Protección sobretensiones</span>
-            <label><input type="radio" name="sobretensiones" value="Si"> Sí</label>
-            <label><input type="radio" name="sobretensiones" value="No"> No</label>
-        </div>
-
-            <label class="mini-label">Tensiones de servicio 1º / 2º (V)</label>
-            <input id="inst_tensiones" class="input-modern">
-
-            <label class="mini-label">Potencia instalada total (kVA)</label>
-            <input id="inst_potencia_total" class="input-modern">
-
-            <label class="mini-label">Empresa de distribución</label>
-            <input id="inst_empresa_distribuidora" class="input-modern">
-
-    </div>
-
-    <!-- ===== NAVEGACIÓN ===== -->
-    <div class="footer-nav">
-        <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
-        <button class="btn-continue" onclick="cambiarHoja(3)">DATOS TRAFO →</button>
-    </div>
-
+    <button onclick="cambiarHoja(2)">CONTINUAR</button>
 </div>
 
-    <!-- ================= HOJA 3 ================= -->
-    <div id="hoja3" class="page" style="display:none;">
-        <h1>2. CARACTERÍSTICAS DEL TRAFO</h1>
-        <div id="contenedor-trafos-datos"></div>
-
-        <button class="btn-add-trafo" onclick="añadirFormularioTrafo()">+ AÑADIR TRANSFORMADOR</button>
-
-        <div class="footer-nav">
-            <!-- 🔧 ANTES volvía a hoja2 -->
-            <button class="btn-back" onclick="cambiarHoja(1)">← Volver</button>
-            <button class="btn-continue" onclick="cambiarHoja(4)">CHECKLIST →</button>
-        </div>
-    </div>
-
-    <!-- ================= HOJA 4 ================= -->
-    <div id="hoja4" class="page" style="display:none;">
-        <h1 id="titulo-seccion"></h1>
-        <div id="contenedor-preguntas"></div>
-
-        <div class="footer-nav">
-            <button class="btn-back" onclick="irAtras()">← Volver</button>
-            <button class="btn-continue" id="btn-siguiente-seccion" onclick="irAdelante()">SIGUIENTE →</button>
-        </div>
-    </div>
-
-<!-- ================= HOJA 6 – MEDICIÓN DE PUESTA A TIERRA ================= -->
-<div id="hoja6" class="page" style="display:none;">
-
-    <h1>ANEXO 1 – ITI-AT-001</h1>
-    <p class="step-subtitle">
-        FITI-AT-001/01 REV3 · Página 6 de 10<br>
-        <b>Tabla 1 – Valores de la resistencia de puesta a tierra</b>
-    </p>
-
-    <!-- ===== CONDICIONES DE MEDICIÓN ===== -->
-    <div class="card">
-       <p class="section-tag">Condiciones de la medición</p>
-
-       <label><input type="radio" name="estado_terreno" value="Seco"> Seco</label>
-       <label><input type="radio" name="estado_terreno" value="Humedo"> Húmedo</label>
-       <label><input type="radio" name="estado_terreno" value="Mojado"> Mojado</label>
+<!-- ================= HOJA 2 ================= -->
+<div id="hoja2" class="page" style="display:none">
+    <h1>Datos titular</h1>
+    <input id="titular_nombre" placeholder="Nombre">
+    <input id="titular_cif" placeholder="CIF">
+    <button onclick="cambiarHoja(3)">CONTINUAR</button>
 </div>
 
+<!-- ================= HOJA 3 ================= -->
+<div id="hoja3" class="page" style="display:none">
+    <h1>Transformadores</h1>
+    <div id="contenedor-trafos-datos"></div>
+    <button onclick="añadirFormularioTrafo()">Añadir trafo</button>
+    <button onclick="cambiarHoja(4)">CHECKLIST</button>
+</div>
 
-    <!-- ===== SISTEMAS DE PUESTA A TIERRA ===== -->
-    <div class="card">
-        <p class="section-tag">Sistemas de puesta a tierra</p>
+<!-- ================= HOJA 4 ================= -->
+<div id="hoja4" class="page" style="display:none">
+    <h1 id="titulo-seccion"></h1>
+    <div id="contenedor-preguntas"></div>
 
-        <div id="contenedor-tierras"></div>
+    <button onclick="irAtras()">←</button>
+    <button onclick="irAdelante()">→</button>
+</div>
 
-        <button class="btn-add-trafo" type="button"
-                onclick="añadirSistemaTierra()">
-            + Añadir sistema de puesta a tierra
-        </button>
-    </div>
+<!-- ================= HOJA 5 CERTIFICADO ================= -->
+<div id="hoja5" class="page" style="display:none">
+    <h1>Certificado</h1>
 
-    <!-- ===== OBSERVACIONES ===== -->
-    <div class="card">
-        <p class="section-tag">Observaciones</p>
-        <textarea id="obs_tierras"
-                  class="input-modern"
-                  rows="3"
-                  placeholder="Observaciones sobre la medición de tierras"></textarea>
-    </div>
+    <input id="cert_expediente" readonly>
+    <input id="cert_fecha" readonly>
 
-    <!-- ===== FOTO DE LA MEDICIÓN ===== -->
-    <div class="card">
-        <p class="section-tag">Fotografía de la medición</p>
+    <textarea id="cert_resultado" rows="6" readonly></textarea>
 
-    <input type="file"
-       id="foto_medida_tierra"
-       accept="image/*"
-       capture="environment"
-       onchange="cargarFotoTierra(this)">
-
-
-        <img id="preview_foto_tierra"
-             style="display:none; margin-top:10px; max-width:100%; border-radius:8px;">
-    </div>
-
-    <!-- ===== NAVEGACIÓN ===== -->
-<div class="footer-nav">
-    <button class="btn-back" onclick="cambiarHoja(4)">← Volver</button>
-    <button class="btn-continue" onclick="cambiarHoja('Certificado')">
-        SIGUIENTE →
-    </button>
+    <button onclick="exportarCertificadoPDF()">EXPORTAR PDF</button>
 </div>
 
 </div>
 
-<!-- ================= HOJA CERTIFICADO ================= -->
-    <div id="hoja5" class="page" style="display:none;">
-    <h1>Certificado de Inspección AT</h1>
-
-    <!-- ===== CABECERA ===== -->
-    <div class="card">
-        <p class="section-tag">Cabecera</p>
-
-        <label class="mini-label">Nº Expediente</label>
-        <input id="cert_expediente" class="input-modern" readonly>
-
-        <label class="mini-label">Fecha inspección</label>
-        <input id="cert_fecha" class="input-modern" readonly>
-    </div>
-
-    <!-- ===== TITULAR ===== -->
-    <div class="card">
-        <p class="section-tag">Titular</p>
-
-        <input id="cert_titular_nombre" class="input-modern" placeholder="Nombre" readonly>
-        <input id="cert_titular_cif" class="input-modern" placeholder="CIF" readonly>
-        <input id="cert_titular_telefono" class="input-modern" placeholder="Teléfono" readonly>
-        <input id="cert_titular_direccion" class="input-modern" placeholder="Dirección" readonly>
-        <input id="cert_titular_cp" class="input-modern" placeholder="CP / Localidad" readonly>
-        <input id="cert_titular_provincia" class="input-modern" placeholder="Provincia" readonly>
-    </div>
-
-    <!-- ===== INSTALACIÓN ===== -->
-    <div class="card">
-        <p class="section-tag">Instalación</p>
-
-        <input id="cert_inst_denominacion" class="input-modern" placeholder="Denominación" readonly>
-        <input id="cert_inst_direccion" class="input-modern" placeholder="Dirección" readonly>
-        <input id="cert_inst_cp" class="input-modern" placeholder="CP / Localidad" readonly>
-        <input id="cert_inst_provincia" class="input-modern" placeholder="Provincia" readonly>
-        <input id="cert_inst_registro" class="input-modern" placeholder="Nº Registro" readonly>
-        <input id="cert_inst_reglamento" class="input-modern" placeholder="Reglamento" readonly>
-    </div>
-
-    <!-- ===== TIPO DE INSPECCIÓN ===== -->
-    <div class="card">
-        <p class="section-tag">Tipo de inspección</p>
-
-        <input id="cert_tipo_inspeccion" class="input-modern" readonly>
-        <input id="cert_subtipo_inspeccion" class="input-modern" readonly>
-    </div>
-
-    <!-- ===== TÉCNICOS ===== -->
-    <div class="card">
-        <p class="section-tag">Técnicos</p>
-
-        <input id="cert_proyectista" class="input-modern" placeholder="Proyectista" readonly>
-        <input id="cert_director" class="input-modern" placeholder="Director de obra" readonly>
-        <input id="cert_instalador" class="input-modern" placeholder="Instalador / Mantenedor" readonly>
-    </div>
-
-    <!-- ===== DATOS TÉCNICOS ===== -->
-    <div class="card">
-        <p class="section-tag">Datos técnicos</p>
-
-        <input id="cert_tipo_instalacion" class="input-modern" readonly>
-        <input id="cert_linea_alimentacion" class="input-modern" readonly>
-        <input id="cert_sobretensiones" class="input-modern" readonly>
-        <input id="cert_tensiones" class="input-modern" readonly>
-        <input id="cert_potencia_total" class="input-modern" readonly>
-        <input id="cert_empresa_distribuidora" class="input-modern" readonly>
-    </div>
-
-    <!-- ===== RESULTADO ===== -->
-    <div class="card">
-        <p class="section-tag">Resultado de la inspección</p>
-
-        <textarea id="cert_resultado" class="input-modern" rows="4" readonly></textarea>
-    </div>
-
-    <div class="footer-nav">
-        <button class="btn-back" onclick="cambiarHoja(4)">← Volver</button>     
-        <button class="btn-continue" onclick="exportarCertificadoPDF()">
-        EXPORTAR PDF
-        </button>
-
-    </div>
-</div>
-
-</div>
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
-
