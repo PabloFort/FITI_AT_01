@@ -302,12 +302,13 @@
 
     <!-- ===== CONDICIONES DE MEDICIÓN ===== -->
     <div class="card">
-        <p class="section-tag">Condiciones de la medición</p>
+       <p class="section-tag">Condiciones de la medición</p>
 
-        <label><input type="radio" name="estado_terreno" value="Seco"> Seco</label>
-        <label><input type="radio" name="estado_terreno" value="Humedo"> Húmedo</label>
-        <label><input type="radio" name="estado_terreno" value="Mojado"> Mojado</label>
-    </div>
+       <label><input type="radio" name="estado_terreno" value="Seco"> Seco</label>
+       <label><input type="radio" name="estado_terreno" value="Humedo"> Húmedo</label>
+       <label><input type="radio" name="estado_terreno" value="Mojado"> Mojado</label>
+</div>
+
 
     <!-- ===== SISTEMAS DE PUESTA A TIERRA ===== -->
     <div class="card">
@@ -334,10 +335,12 @@
     <div class="card">
         <p class="section-tag">Fotografía de la medición</p>
 
-        <input type="file"
-               id="foto_medida_tierra"
-               accept="image/*"
-               capture="environment">
+    <input type="file"
+       id="foto_medida_tierra"
+       accept="image/*"
+       capture="environment"
+       onchange="cargarFotoTierra(this)">
+
 
         <img id="preview_foto_tierra"
              style="display:none; margin-top:10px; max-width:100%; border-radius:8px;">
@@ -345,8 +348,10 @@
 
     <!-- ===== NAVEGACIÓN ===== -->
     <div class="footer-nav">
-        <button class="btn-back" onclick="cambiarHoja(5)">← Volver</button>
-        <button class="btn-continue" onclick="cambiarHoja(7)">SIGUIENTE →</button>
+<div class="footer-nav">
+    <button class="btn-back" onclick="cambiarHoja(4)">← Volver</button>
+    <button class="btn-continue" onclick="cambiarHojaCertificado()">
+SIGUIENTE →</button>
     </div>
 
 </div>

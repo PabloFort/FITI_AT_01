@@ -248,6 +248,10 @@ function cambiarHoja(n){
     if(n === 3 && contadorTrafos === 0) añadirFormularioTrafo();
     if(n === 4){ seccionActual = 0; renderSeccion(); }
     if(n === 1) setTimeout(iniciarFirma,50);
+    if (n === 6 && contadorTierras === 0) {
+          añadirSistemaTierra();
+}
+
 
     window.scrollTo(0,0);
 }
@@ -728,8 +732,10 @@ if (cert_linea_alimentacion.value === "Mixta")
 
 // =================VALORES DE TIERRA===============
 
-form.getTextField("Estado_terreno")
-    .setText(document.getElementById("estado_terreno")?.value || "");
+const estadoTerreno =
+    document.querySelector('input[name="estado_terreno"]:checked')?.value || "";
+
+form.getTextField("Estado_terreno").setText(estadoTerreno);
 
 form.getTextField("Tierra_1")
     .setText(document.getElementById("tierra_1")?.value || "");
