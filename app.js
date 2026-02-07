@@ -384,8 +384,7 @@ function irAdelante(){
         seccionActual++;
         renderSeccion();
     } else {
-        // ✅ FIN DEL CHECKLIST → GENERAR CERTIFICADO
-        generarCertificado();
+        cambiarHoja(6);
     }
 }
 
