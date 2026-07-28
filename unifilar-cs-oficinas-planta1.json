@@ -1,0 +1,118 @@
+{
+  "cuadro": "C.S. Oficinas Planta 1ª",
+  "fuente": "Croquis a mano alzada",
+  "notas": [
+    "Acometida sin tapa de protección (contadores directos)",
+    "1T interpretado como ~1,5 mm²; 2T como ~2,5 mm²",
+    "Números entre paréntesis del croquis (p. ej. 21/20) no incluidos — confirmar significado"
+  ],
+  "acometida": {
+    "seccion": "4×35",
+    "tension_anotada": "1 kV",
+    "interruptor_general": "4×125 A"
+  },
+  "grupos": [
+    {
+      "id": 1,
+      "nombre": "Servicios",
+      "alimentacion_mm2": 6,
+      "diferencial": "2/40/30",
+      "magnetotermico_grupo": null,
+      "circuitos": [
+        { "id": "C1", "pia": "2×16 A", "seccion": "2T", "destino": "Hombres" },
+        { "id": "C2", "pia": "2×16 A", "seccion": "2T", "destino": "Mujeres" },
+        { "id": "C3", "pia": "2×16 A", "seccion": "2T", "destino": "Pasillo lavabo" },
+        { "id": "C4", "pia": "2×16 A", "seccion": "2T", "destino": "V. vario café" }
+      ]
+    },
+    {
+      "id": 2,
+      "nombre": "Clima planta 1ª",
+      "alimentacion_mm2": 10,
+      "magnetotermico_grupo": "2×40 A",
+      "diferencial": "2/40/30",
+      "circuitos": [
+        { "id": "A1", "pia": "2×25 A", "seccion": "6", "destino": "Aire 1" },
+        { "id": "A2", "pia": "2×25 A", "seccion": "6", "destino": "Aire 2" },
+        { "id": "A3", "pia": "2×25 A", "seccion": "6", "destino": "Aire 3" }
+      ]
+    },
+    {
+      "id": 3,
+      "nombre": "Zonas",
+      "alimentacion_mm2": 10,
+      "diferencial": "2/40/30",
+      "magnetotermico_grupo": null,
+      "circuitos": [
+        { "id": "Z1", "pia": "2×10 A", "seccion": "1T", "destino": "Zona 1" },
+        { "id": "Z2", "pia": "2×10 A", "seccion": "1T", "destino": "Zona 2" },
+        { "id": "Z3", "pia": "2×10 A", "seccion": "1T", "destino": "Zona 3" }
+      ]
+    },
+    {
+      "id": 4,
+      "nombre": "Pasillo / C.S. General P.B.",
+      "alimentacion_mm2": 6,
+      "diferencial": "2/40/30",
+      "magnetotermico_grupo": null,
+      "circuitos": [
+        { "id": "P1", "pia": "2×10 A", "seccion": "1T", "destino": "Pasillo" },
+        { "id": "PB", "pia": "4×40 A", "seccion": "10", "destino": "C.S. General P.B." }
+      ]
+    },
+    {
+      "id": 5,
+      "nombre": "Clima planta baja",
+      "alimentacion_mm2": 6,
+      "diferencial": "4/40/30",
+      "magnetotermico_grupo": null,
+      "circuitos": [
+        { "id": "APB1", "pia": "4×25 A", "seccion": "6", "destino": "Aire 1 P.B. ala derecha" },
+        { "id": "APB2", "pia": "4×25 A", "seccion": "6", "destino": "Aire 2 P.B. ala izq." },
+        { "id": "APB3", "pia": "4×25 A", "seccion": "6", "destino": "Aire 3 P.B." }
+      ]
+    },
+    {
+      "id": 6,
+      "nombre": "SAI",
+      "alimentacion_mm2": 10,
+      "diferencial": "4/40/30",
+      "magnetotermico_grupo": null,
+      "circuitos": [
+        { "id": "SAI", "pia": "4×32 A", "seccion": "10", "destino": "SAI" }
+      ]
+    },
+    {
+      "id": 7,
+      "nombre": "Puestos trabajo blancos",
+      "alimentacion_mm2": 16,
+      "magnetotermico_grupo": "2×40 A",
+      "diferencial": "2/40/30",
+      "circuitos": [
+        { "id": "L1", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto blanco L1" },
+        { "id": "L2", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto blanco L2" },
+        { "id": "L3", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto blanco L3" },
+        { "id": "L4", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto blanco L4" },
+        { "id": "L5", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto blanco L5" },
+        { "id": "L6", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto blanco L6" },
+        { "id": "L7", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto blanco L7" }
+      ]
+    },
+    {
+      "id": 8,
+      "nombre": "Puestos trabajo rojos",
+      "alimentacion_mm2": 16,
+      "magnetotermico_grupo": "2×40 A",
+      "diferencial": "2/40/30",
+      "circuitos": [
+        { "id": "L1", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto rojo L1" },
+        { "id": "L2", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto rojo L2" },
+        { "id": "L3", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto rojo L3" },
+        { "id": "L4", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto rojo L4" },
+        { "id": "L5", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto rojo L5" },
+        { "id": "L6", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto rojo L6" },
+        { "id": "L7", "pia": "2×16 A", "seccion": "2T", "destino": "Puesto rojo L7" }
+      ]
+    }
+  ]
+}
