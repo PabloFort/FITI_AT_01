@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C.S. Oficinas Planta 1ª — Unifilar digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --line: #1e3a5f;
+      --accent: #0d6e6e;
+      --muted: #64748b;
+      --paper: #f7f5f0;
+      --panel: #ffffff;
+      --warn: #9a3412;
+      --bar: #1e293b;
+      --rcd: #0f766e;
+      --mcb: #1d4ed8;
+      --grid: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 0%, rgba(13, 110, 110, 0.08), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(30, 58, 95, 0.07), transparent 45%),
+        var(--paper);
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1.5rem 1.5rem 0.75rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--line);
+    }
+
+    header p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      align-items: center;
+    }
+
+    .toolbar button,
+    .toolbar a.btn {
+      appearance: none;
+      border: 1px solid #cbd5e1;
+      background: var(--panel);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .toolbar button:hover,
+    .toolbar a.btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .toolbar .note {
+      font-size: 0.8rem;
+      color: var(--warn);
+      font-weight: 500;
+    }
+
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 1rem 2rem;
+    }
+
+    .diagram-wrap {
+      background: var(--panel);
+      border: 1px solid var(--grid);
+      border-radius: 10px;
+      overflow: auto;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+    }
+
+    svg.unifilar {
+      display: block;
+      min-width: 1280px;
+      width: 100%;
+      height: auto;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+      padding: 1rem;
+      background: var(--panel);
+      border: 1px solid var(--grid);
+      border-radius: 10px;
+      font-size: 0.85rem;
+    }
+
+    .legend h2 {
+      grid-column: 1 / -1;
+      margin: 0 0 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--muted);
+    }
+
+    .legend-item svg { flex-shrink: 0; }
+
+    section.table-section {
+      margin-top: 1.5rem;
+      background: var(--panel);
+      border: 1px solid var(--grid);
+      border-radius: 10px;
+      padding: 1rem 1.1rem 1.25rem;
+      overflow-x: auto;
+    }
+
+    section.table-section h2 {
+      margin: 0 0 0.85rem;
+      font-size: 1.05rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.45rem 0.55rem;
+      border-bottom: 1px solid var(--grid);
+      vertical-align: top;
+    }
+
+    th {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:hover td { background: #f8fafc; }
+
+    .tag {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: #ecfeff;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    footer {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 0 1.5rem 2rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    @media print {
+      body { background: white; }
+      .toolbar, footer { display: none; }
+      .diagram-wrap, .legend, section.table-section {
+        box-shadow: none;
+        border-color: #ccc;
+      }
+      .diagram-wrap { overflow: visible; }
+      svg.unifilar { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>C.S. Oficinas Planta 1ª</h1>
+    <p>Esquema unifilar digitalizado a partir del croquis a mano alzada. Simbología aproximada IEC.</p>
+    <div class="toolbar">
+      <button type="button" onclick="window.print()">Imprimir / PDF</button>
+      <a class="btn" href="#tabla">Ver tabla de circuitos</a>
+      <span class="note">Acometida: sin tapa de protección (contadores directos)</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="diagram-wrap">
+      <svg class="unifilar" viewBox="0 0 1480 780" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+        <title id="title">Unifilar C.S. Oficinas Planta 1ª</title>
+        <desc id="desc">Cuadro de servicios oficinas planta primera con diferencial, magnetotérmicos y derivaciones a cargas y cuadro general P.B. y SAI.</desc>
+
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 Z" fill="#1e3a5f"/>
+          </marker>
+          <style>
+            .bus { stroke: #1e293b; stroke-width: 3.5; fill: none; stroke-linecap: square; }
+            .wire { stroke: #1e3a5f; stroke-width: 1.6; fill: none; }
+            .wire-thick { stroke: #1e3a5f; stroke-width: 2.2; fill: none; }
+            .label { font-family: "IBM Plex Sans", sans-serif; fill: #0f172a; }
+            .mono { font-family: "IBM Plex Mono", monospace; fill: #0f172a; }
+            .muted { fill: #64748b; }
+            .small { font-size: 11px; }
+            .tiny { font-size: 10px; }
+            .title-txt { font-size: 18px; font-weight: 700; fill: #1e3a5f; }
+            .subtitle { font-size: 12px; fill: #64748b; }
+            .box { fill: #fff; stroke: #1e3a5f; stroke-width: 1.5; }
+            .box-fill { fill: #f0fdfa; stroke: #0d6e6e; stroke-width: 1.5; }
+          </style>
+        </defs>
+
+        <!-- Title block -->
+        <text class="label title-txt" x="24" y="36">C.S. OFICINAS PLANTA 1ª</text>
+        <text class="label subtitle" x="24" y="54">Unifilar digital · Acometida 4×35 (1 kV) · IG 4×125 A</text>
+
+        <!-- Main bus -->
+        <line class="bus" x1="40" y1="120" x2="1440" y2="120"/>
+        <text class="mono small muted" x="40" y="108">BARRA GENERAL</text>
+
+        <!-- Incoming supply (right) -->
+        <g id="acometida" transform="translate(1280,0)">
+          <line class="wire-thick" x1="80" y1="40" x2="80" y2="120"/>
+          <!-- conductor marks -->
+          <line class="wire" x1="72" y1="55" x2="88" y2="62"/>
+          <line class="wire" x1="72" y1="62" x2="88" y2="69"/>
+          <line class="wire" x1="72" y1="69" x2="88" y2="76"/>
+          <line class="wire" x1="72" y1="76" x2="88" y2="83"/>
+          <text class="mono tiny" x="92" y="68">4×35</text>
+          <text class="mono tiny muted" x="92" y="80">(1 kV)</text>
+          <!-- main breaker symbol -->
+          <line class="wire" x1="68" y1="95" x2="92" y2="95"/>
+          <line class="wire" x1="80" y1="88" x2="80" y2="102"/>
+          <circle cx="80" cy="95" r="3.5" fill="#fff" stroke="#1d4ed8" stroke-width="1.5"/>
+          <text class="mono small" x="96" y="99" fill="#1d4ed8">4×125 A</text>
+          <text class="label tiny" x="40" y="28" fill="#9a3412">Sin tapa protección</text>
+          <text class="label tiny" x="40" y="40" fill="#9a3412">(contadores directos)</text>
+        </g>
+
+        <!-- Helper macros as groups -->
+        <!-- Branch anchors on bus: x positions -->
+        <!-- B1:100  B2:250  B3:400  B4:540  B5:700  B6:860  B7a:1020  B7b:1220 -->
+
+        <!-- ========== BRANCH 1: Servicios ========== -->
+        <g id="b1" transform="translate(100,120)">
+          <line class="wire" x1="0" y1="0" x2="0" y2="28"/>
+          <text class="mono tiny" x="8" y="18">6</text>
+          <!-- RCD -->
+          <circle cx="0" cy="42" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="46" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="46">2/40/30</text>
+          <line class="wire" x1="0" y1="54" x2="0" y2="78"/>
+          <!-- horizontal split -->
+          <line class="wire" x1="-54" y1="78" x2="54" y2="78"/>
+          <!-- 4 circuits -->
+          <g transform="translate(-54,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×16</text>
+            <text class="mono tiny muted" x="12" y="48">2T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">HOMBRES</text>
+          </g>
+          <g transform="translate(-18,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×16</text>
+            <text class="mono tiny muted" x="12" y="48">2T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">MUJERES</text>
+          </g>
+          <g transform="translate(18,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×16</text>
+            <text class="mono tiny muted" x="12" y="48">2T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">PASILLO</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="80">LAVABO</text>
+          </g>
+          <g transform="translate(54,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×16</text>
+            <text class="mono tiny muted" x="12" y="48">2T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">V. VARIO</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="80">CAFÉ</text>
+          </g>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">Servicios</text>
+        </g>
+
+        <!-- ========== BRANCH 2: Aire A ========== -->
+        <g id="b2" transform="translate(280,120)">
+          <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+          <text class="mono tiny" x="8" y="16">10</text>
+          <!-- MCB 2x40 -->
+          <line class="wire" x1="-10" y1="28" x2="10" y2="40"/>
+          <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+          <text class="mono tiny" x="14" y="36" fill="#1d4ed8">2×40</text>
+          <!-- RCD -->
+          <circle cx="0" cy="62" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="66" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="66">2/40/30</text>
+          <line class="wire" x1="0" y1="74" x2="0" y2="96"/>
+          <line class="wire" x1="-40" y1="96" x2="40" y2="96"/>
+          <g transform="translate(-40,96)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="20"/>
+            <line class="wire" x1="-8" y1="26" x2="8" y2="36"/>
+            <line class="wire" x1="0" y1="20" x2="0" y2="46"/>
+            <text class="mono tiny" x="12" y="34" fill="#1d4ed8">2×25</text>
+            <text class="mono tiny muted" x="12" y="46">6</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="66">AIRE 1</text>
+          </g>
+          <g transform="translate(0,96)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="20"/>
+            <line class="wire" x1="-8" y1="26" x2="8" y2="36"/>
+            <line class="wire" x1="0" y1="20" x2="0" y2="46"/>
+            <text class="mono tiny" x="12" y="34" fill="#1d4ed8">2×25</text>
+            <text class="mono tiny muted" x="12" y="46">6</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="66">AIRE 2</text>
+          </g>
+          <g transform="translate(40,96)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="20"/>
+            <line class="wire" x1="-8" y1="26" x2="8" y2="36"/>
+            <line class="wire" x1="0" y1="20" x2="0" y2="46"/>
+            <text class="mono tiny" x="12" y="34" fill="#1d4ed8">2×25</text>
+            <text class="mono tiny muted" x="12" y="46">6</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="66">AIRE 3</text>
+          </g>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">Clima P.1ª</text>
+        </g>
+
+        <!-- ========== BRANCH 3: Zonas ========== -->
+        <g id="b3" transform="translate(430,120)">
+          <line class="wire" x1="0" y1="0" x2="0" y2="28"/>
+          <text class="mono tiny" x="8" y="18">10</text>
+          <circle cx="0" cy="42" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="46" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="46">2/40/30</text>
+          <line class="wire" x1="0" y1="54" x2="0" y2="78"/>
+          <line class="wire" x1="-40" y1="78" x2="40" y2="78"/>
+          <g transform="translate(-40,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×10</text>
+            <text class="mono tiny muted" x="12" y="48">1T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">ZONA 1</text>
+          </g>
+          <g transform="translate(0,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×10</text>
+            <text class="mono tiny muted" x="12" y="48">1T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">ZONA 2</text>
+          </g>
+          <g transform="translate(40,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×10</text>
+            <text class="mono tiny muted" x="12" y="48">1T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">ZONA 3</text>
+          </g>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">Zonas</text>
+        </g>
+
+        <!-- ========== BRANCH 4: Pasillo + CS General PB ========== -->
+        <g id="b4" transform="translate(580,120)">
+          <line class="wire" x1="0" y1="0" x2="0" y2="28"/>
+          <text class="mono tiny" x="8" y="18">6</text>
+          <circle cx="0" cy="42" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="46" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="46">2/40/30</text>
+          <line class="wire" x1="0" y1="54" x2="0" y2="78"/>
+          <line class="wire" x1="-36" y1="78" x2="40" y2="78"/>
+          <!-- Pasillo -->
+          <g transform="translate(-36,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">2×10</text>
+            <text class="mono tiny muted" x="12" y="48">1T</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">PASILLO</text>
+          </g>
+          <!-- CS General PB -->
+          <g transform="translate(40,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+            <text class="mono tiny muted" x="8" y="14">10</text>
+            <line class="wire" x1="-10" y1="24" x2="10" y2="36"/>
+            <line class="wire" x1="0" y1="18" x2="0" y2="44"/>
+            <text class="mono tiny" x="14" y="34" fill="#1d4ed8">4×40</text>
+            <rect class="box-fill" x="-48" y="52" width="96" height="36" rx="3"/>
+            <text class="label tiny" text-anchor="middle" x="0" y="68" fill="#0d6e6e">C.S. GENERAL</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="80" fill="#0d6e6e">P.B.</text>
+          </g>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">Pasillo / P.B.</text>
+        </g>
+
+        <!-- ========== BRANCH 5: Aires PB ========== -->
+        <g id="b5" transform="translate(760,120)">
+          <line class="wire" x1="0" y1="0" x2="0" y2="28"/>
+          <text class="mono tiny" x="8" y="18">6</text>
+          <circle cx="0" cy="42" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="46" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="46">4/40/30</text>
+          <line class="wire" x1="0" y1="54" x2="0" y2="78"/>
+          <line class="wire" x1="-55" y1="78" x2="55" y2="78"/>
+          <g transform="translate(-55,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">4×25</text>
+            <text class="mono tiny muted" x="12" y="48">6</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">AIRE 1 P.B.</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="80">ALA DERECHA</text>
+          </g>
+          <g transform="translate(0,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">4×25</text>
+            <text class="mono tiny muted" x="12" y="48">6</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">AIRE 2 P.B.</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="80">ALA IZQ.</text>
+          </g>
+          <g transform="translate(55,78)">
+            <line class="wire" x1="0" y1="0" x2="0" y2="22"/>
+            <line class="wire" x1="-8" y1="28" x2="8" y2="38"/>
+            <line class="wire" x1="0" y1="22" x2="0" y2="48"/>
+            <text class="mono tiny" x="12" y="36" fill="#1d4ed8">4×25</text>
+            <text class="mono tiny muted" x="12" y="48">6</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="68">AIRE 3</text>
+            <text class="label tiny" text-anchor="middle" x="0" y="80">P.B.</text>
+          </g>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">Clima P.B.</text>
+        </g>
+
+        <!-- ========== BRANCH 6: SAI ========== -->
+        <g id="b6" transform="translate(920,120)">
+          <line class="wire" x1="0" y1="0" x2="0" y2="28"/>
+          <text class="mono tiny" x="8" y="18">10</text>
+          <circle cx="0" cy="42" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="46" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="46">4/40/30</text>
+          <line class="wire" x1="0" y1="54" x2="0" y2="78"/>
+          <text class="mono tiny muted" x="8" y="70">10</text>
+          <line class="wire" x1="-10" y1="84" x2="10" y2="96"/>
+          <line class="wire" x1="0" y1="78" x2="0" y2="108"/>
+          <text class="mono tiny" x="14" y="96" fill="#1d4ed8">4×32</text>
+          <rect class="box-fill" x="-36" y="116" width="72" height="32" rx="3"/>
+          <text class="label" text-anchor="middle" x="0" y="136" fill="#0d6e6e" style="font-size:13px;font-weight:600">SAI</text>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">UPS</text>
+        </g>
+
+        <!-- ========== BRANCH 7A: Puestos blancos ========== -->
+        <g id="b7a" transform="translate(1080,120)">
+          <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+          <text class="mono tiny" x="8" y="14">16</text>
+          <line class="wire" x1="-10" y1="24" x2="10" y2="36"/>
+          <line class="wire" x1="0" y1="18" x2="0" y2="46"/>
+          <text class="mono tiny" x="14" y="34" fill="#1d4ed8">2×40</text>
+          <circle cx="0" cy="60" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="64" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="64">2/40/30</text>
+          <line class="wire" x1="0" y1="72" x2="0" y2="92"/>
+          <line class="wire" x1="-90" y1="92" x2="90" y2="92"/>
+          <!-- L1-L7 -->
+          <g id="blancos">
+            <!-- generated positions -90,-60,-30,0,30,60,90 -->
+            <g transform="translate(-90,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L1</text>
+            </g>
+            <g transform="translate(-60,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L2</text>
+            </g>
+            <g transform="translate(-30,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L3</text>
+            </g>
+            <g transform="translate(0,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L4</text>
+            </g>
+            <g transform="translate(30,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L5</text>
+            </g>
+            <g transform="translate(60,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L6</text>
+            </g>
+            <g transform="translate(90,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L7</text>
+            </g>
+          </g>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">Puestos trabajo blancos</text>
+        </g>
+
+        <!-- ========== BRANCH 7B: Puestos rojos ========== -->
+        <g id="b7b" transform="translate(1320,120)">
+          <!-- feed from same 16mm bus tap - show connection from left -->
+          <line class="wire" x1="-120" y1="0" x2="0" y2="0" stroke-dasharray="4 3" opacity="0.5"/>
+          <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+          <text class="mono tiny" x="8" y="14">16</text>
+          <line class="wire" x1="-10" y1="24" x2="10" y2="36"/>
+          <line class="wire" x1="0" y1="18" x2="0" y2="46"/>
+          <text class="mono tiny" x="14" y="34" fill="#1d4ed8">2×40</text>
+          <circle cx="0" cy="60" r="12" fill="#fff" stroke="#0f766e" stroke-width="1.8"/>
+          <text class="mono tiny" text-anchor="middle" x="0" y="64" fill="#0f766e">Δ</text>
+          <text class="mono tiny" x="16" y="64">2/40/30</text>
+          <line class="wire" x1="0" y1="72" x2="0" y2="92"/>
+          <line class="wire" x1="-90" y1="92" x2="90" y2="92"/>
+          <g>
+            <g transform="translate(-90,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L1</text>
+            </g>
+            <g transform="translate(-60,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L2</text>
+            </g>
+            <g transform="translate(-30,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L3</text>
+            </g>
+            <g transform="translate(0,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L4</text>
+            </g>
+            <g transform="translate(30,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L5</text>
+            </g>
+            <g transform="translate(60,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L6</text>
+            </g>
+            <g transform="translate(90,92)">
+              <line class="wire" x1="0" y1="0" x2="0" y2="18"/>
+              <line class="wire" x1="-7" y1="22" x2="7" y2="32"/>
+              <line class="wire" x1="0" y1="18" x2="0" y2="42"/>
+              <text class="mono tiny" text-anchor="middle" x="0" y="56" fill="#1d4ed8">2×16</text>
+              <text class="mono tiny muted" text-anchor="middle" x="0" y="68">2T</text>
+              <text class="label tiny" text-anchor="middle" x="0" y="84">L7</text>
+            </g>
+          </g>
+          <text class="label tiny muted" text-anchor="middle" x="0" y="-8">Puestos trabajo rojos</text>
+        </g>
+
+        <!-- Bus tap dots -->
+        <circle cx="100" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="280" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="430" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="580" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="760" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="920" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="1080" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="1320" cy="120" r="3.5" fill="#1e293b"/>
+        <circle cx="1360" cy="120" r="3.5" fill="#1e293b"/>
+
+        <!-- Legend strip at bottom of SVG -->
+        <line class="wire" x1="40" y1="340" x2="1440" y2="340" stroke="#e2e8f0"/>
+        <text class="label small muted" x="40" y="365">Convención: 1T ≈ 1,5 mm² · 2T ≈ 2,5 mm² · Δ = diferencial (polos/In/IΔn) · trazo diagonal = magnetotérmico</text>
+        <text class="label small muted" x="40" y="385">Notas del croquis original: números entre paréntesis sobre salidas (p. ej. 21/20) omitidos — confirmar si son referencias de bornas o códigos de circuito.</text>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <h2>Leyenda</h2>
+      <div class="legend-item">
+        <svg width="36" height="24" viewBox="0 0 36 24"><line x1="4" y1="12" x2="32" y2="12" stroke="#1e293b" stroke-width="3.5"/></svg>
+        Barra general
+      </div>
+      <div class="legend-item">
+        <svg width="36" height="24" viewBox="0 0 36 24"><circle cx="18" cy="12" r="9" fill="#fff" stroke="#0f766e" stroke-width="1.8"/><text x="18" y="16" text-anchor="middle" font-size="10" fill="#0f766e">Δ</text></svg>
+        Diferencial
+      </div>
+      <div class="legend-item">
+        <svg width="36" height="24" viewBox="0 0 36 24"><line x1="18" y1="2" x2="18" y2="22" stroke="#1e3a5f" stroke-width="1.6"/><line x1="10" y1="8" x2="26" y2="16" stroke="#1e3a5f" stroke-width="1.6"/></svg>
+        Magnetotérmico
+      </div>
+      <div class="legend-item">
+        <svg width="48" height="24" viewBox="0 0 48 24"><rect x="2" y="4" width="44" height="16" rx="2" fill="#f0fdfa" stroke="#0d6e6e"/></svg>
+        Cuadro / SAI
+      </div>
+    </div>
+
+    <section class="table-section" id="tabla">
+      <h2>Inventario de circuitos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Grupo</th>
+            <th>Alimentación</th>
+            <th>Protección superior</th>
+            <th>Circuito</th>
+            <th>PIA</th>
+            <th>Sección</th>
+            <th>Destino</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="7"><span class="tag">Acometida</span></td>
+          </tr>
+          <tr>
+            <td>Entrada</td>
+            <td>4×35 (1 kV)</td>
+            <td>IG 4×125 A</td>
+            <td>—</td>
+            <td>—</td>
+            <td>4×35</td>
+            <td>Barra C.S. Oficinas P.1ª (sin tapa protección / contadores directos)</td>
+          </tr>
+
+          <tr><td colspan="7"><span class="tag">1 · Servicios</span></td></tr>
+          <tr><td>Servicios</td><td>6 mm²</td><td>Δ 2/40/30</td><td>C1</td><td>2×16 A</td><td>2T</td><td>Hombres</td></tr>
+          <tr><td>Servicios</td><td>6 mm²</td><td>Δ 2/40/30</td><td>C2</td><td>2×16 A</td><td>2T</td><td>Mujeres</td></tr>
+          <tr><td>Servicios</td><td>6 mm²</td><td>Δ 2/40/30</td><td>C3</td><td>2×16 A</td><td>2T</td><td>Pasillo lavabo</td></tr>
+          <tr><td>Servicios</td><td>6 mm²</td><td>Δ 2/40/30</td><td>C4</td><td>2×16 A</td><td>2T</td><td>V. vario café</td></tr>
+
+          <tr><td colspan="7"><span class="tag">2 · Clima planta 1ª</span></td></tr>
+          <tr><td>Clima P.1ª</td><td>10 mm²</td><td>2×40 A + Δ 2/40/30</td><td>A1</td><td>2×25 A</td><td>6 mm²</td><td>Aire 1</td></tr>
+          <tr><td>Clima P.1ª</td><td>10 mm²</td><td>2×40 A + Δ 2/40/30</td><td>A2</td><td>2×25 A</td><td>6 mm²</td><td>Aire 2</td></tr>
+          <tr><td>Clima P.1ª</td><td>10 mm²</td><td>2×40 A + Δ 2/40/30</td><td>A3</td><td>2×25 A</td><td>6 mm²</td><td>Aire 3</td></tr>
+
+          <tr><td colspan="7"><span class="tag">3 · Zonas</span></td></tr>
+          <tr><td>Zonas</td><td>10 mm²</td><td>Δ 2/40/30</td><td>Z1</td><td>2×10 A</td><td>1T</td><td>Zona 1</td></tr>
+          <tr><td>Zonas</td><td>10 mm²</td><td>Δ 2/40/30</td><td>Z2</td><td>2×10 A</td><td>1T</td><td>Zona 2</td></tr>
+          <tr><td>Zonas</td><td>10 mm²</td><td>Δ 2/40/30</td><td>Z3</td><td>2×10 A</td><td>1T</td><td>Zona 3</td></tr>
+
+          <tr><td colspan="7"><span class="tag">4 · Pasillo / P.B.</span></td></tr>
+          <tr><td>Pasillo</td><td>6 mm²</td><td>Δ 2/40/30</td><td>P1</td><td>2×10 A</td><td>1T</td><td>Pasillo</td></tr>
+          <tr><td>Derivación</td><td>6 → 10 mm²</td><td>Δ 2/40/30</td><td>PB</td><td>4×40 A</td><td>10 mm²</td><td>C.S. General P.B.</td></tr>
+
+          <tr><td colspan="7"><span class="tag">5 · Clima planta baja</span></td></tr>
+          <tr><td>Clima P.B.</td><td>6 mm²</td><td>Δ 4/40/30</td><td>APB1</td><td>4×25 A</td><td>6 mm²</td><td>Aire 1 P.B. ala derecha</td></tr>
+          <tr><td>Clima P.B.</td><td>6 mm²</td><td>Δ 4/40/30</td><td>APB2</td><td>4×25 A</td><td>6 mm²</td><td>Aire 2 P.B. ala izq.</td></tr>
+          <tr><td>Clima P.B.</td><td>6 mm²</td><td>Δ 4/40/30</td><td>APB3</td><td>4×25 A</td><td>6 mm²</td><td>Aire 3 P.B.</td></tr>
+
+          <tr><td colspan="7"><span class="tag">6 · SAI</span></td></tr>
+          <tr><td>SAI</td><td>10 mm²</td><td>Δ 4/40/30</td><td>SAI</td><td>4×32 A</td><td>10 mm²</td><td>SAI</td></tr>
+
+          <tr><td colspan="7"><span class="tag">7 · Puestos blancos</span></td></tr>
+          <tr><td>Blancos</td><td>16 mm²</td><td>2×40 A + Δ 2/40/30</td><td>L1–L7</td><td>2×16 A c/u</td><td>2T</td><td>Puestos trabajo blancos</td></tr>
+
+          <tr><td colspan="7"><span class="tag">8 · Puestos rojos</span></td></tr>
+          <tr><td>Rojos</td><td>16 mm²</td><td>2×40 A + Δ 2/40/30</td><td>L1–L7</td><td>2×16 A c/u</td><td>2T</td><td>Puestos trabajo rojos</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    Digitalización orientativa a partir de croquis. Verificar en campo calibre, polaridad, selectividad y coincidencia con rotulación del cuadro antes de usarlo como documento de obra.
+  </footer>
+</body>
+</html>
